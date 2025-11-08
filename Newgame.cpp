@@ -1,5 +1,7 @@
 ﻿#include "Newgame.h"
 #include "GameControl.h"
+#include "Graphic.h"
+#include "Console.h"
 using namespace std;
 
 /*-----------------@- Function Import name -@-----------------------*/
@@ -97,29 +99,60 @@ bool putname(int XX, int YY, string& str) {   //tao o van ban de nhap ten
 	return true; //Sau khi thoat vong lap ,tra ve 1 (true) bao hieu thanh cong.
 }
 
-	
-	
+int getWinStreak(int XX, int YY) {
+	int currentStreak = 5; // Mặc định
+	int menuY = YY + 7; // Vị trí bên dưới ô nhập tên
+
+	drawBoardMenu(XX - 5, menuY - 1, 31, 15, " So nuoc de thang: ");
+
+	while (true) {
+		// Vẽ lựa chọn hiện tại
+		string streakStr = "      < " + to_string(currentStreak) + " >      ";
+		drawBoardMenu(XX + 3, menuY + 1, 20, 14, streakStr); // 14 = màu đã chọn
+
+		int _in = nextMove();
+
+		if (_in == 5) return 0; // Esc
+		if (_in == 0) return currentStreak; // Enter
+
+		if (_in == 2 || _in == 22) { // Mũi tên trái
+			currentStreak--;
+			if (currentStreak < 3) currentStreak = 7;
+		}
+		else if (_in == 4 || _in == 44) { // Mũi tên phải
+			currentStreak++;
+			if (currentStreak > 7) currentStreak = 3;
+		}
+	}
+}
+
+
+
 void newGame(int XX, int YY) {
-	newgame:
+newgame:
 	/*------------------ DECOR ---------------------------*/
 	system("cls"); drawGAME_MOI(XX - 20, YY - 9);
 	/*----------------------------------------------------*/
 
 	/*----------------- Import Name  ---------------------*/
 	string name1, name2;
-	drawBoardMenu(XX-5, YY, 31, 15, " Ten nguoi choi 1: ");
+	drawBoardMenu(XX - 5, YY, 31, 15, " Ten nguoi choi 1: ");
 	if (!putname(XX + 14, YY + 1, name1 = "[nhap_ten]")) return;   // Name of player 1
 
 	drawBoardMenu(XX - 5, YY + 3, 31, 15, " Ten nguoi choi 2: ");
 	if (!putname(XX + 14, YY + 4, name2 = "[nhap_ten]")) return;   // Name of player 2
 
+	int winStreak = getWinStreak(XX, YY);
+	if (winStreak == 0) return; // Người dùng nhấn Esc
+
+
 	if (help(61, 12, 0) == 1) {
-		startGame(true, XX + 3, YY, name1, name2, {}, "", 0, 0); // toa do XX = 61 + 3, YY = 12
+		startGame(true, XX + 3, YY, name1, name2, {}, "", 0, 0, winStreak); // toa do XX = 61 + 3, YY = 12
 	}
 	else
 		goto newgame;
-	
-	
+
+
 }
 
 

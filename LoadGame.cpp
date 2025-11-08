@@ -73,7 +73,7 @@ void loadGame(int XX, int YY) {
 			s4[1] = { XX + 8, YY + 15, 16, 14,  ">>   XOA    <<" };
 			s4[2] = { XX + 28, YY + 15, 17, 14, ">>  DOI TEN  <<" };
 
-			
+
 			s1[S].draw();
 			gotoXY(XX - 30, YY + 16); setColor(co_theme);
 			cout << "                                                                                 ";
@@ -81,7 +81,7 @@ void loadGame(int XX, int YY) {
 
 			int Sj = 0;
 			while (true) {
-				
+
 				gotoXY(XX - 30, YY + 16); setColor(co_theme);
 				cout << "                                                                                 ";
 				gotoXY(XX - 24, YY + 16); setColor(11, 0); cout << " Chon: ";
@@ -97,12 +97,12 @@ void loadGame(int XX, int YY) {
 				else if (_in == 0) {					// Enter
 					if (Sj == 0) {		// Load file and play
 						vector<ii> Cache;
-						int Xscore, Oscore;
+						int Xscore, Oscore, winStreak;
 						string name1, name2;
-						
 
-						loadFromFile(fileNames[S], Cache, Xscore, Oscore, name1, name2);
-						startGame(false, XX, YY, name1, name2, Cache, fileNames[S], Xscore, Oscore);
+
+						loadFromFile(fileNames[S], Cache, Xscore, Oscore, name1, name2, winStreak);
+						startGame(false, XX, YY, name1, name2, Cache, fileNames[S], Xscore, Oscore, winStreak);
 						return;
 					}
 
@@ -175,12 +175,12 @@ void loadGame(int XX, int YY) {
 			else if (_in == 2 || _in == 22) nxt_S = (S + 10) % 15;			// Left
 			else if (_in == 3 || _in == 33) nxt_S = (S + 1) % 5 + col * 5;	// Down
 			else if (_in == 4 || _in == 44) nxt_S = (S + 5) % 15;			// Right
-			if (nxt_S <= sz) S = nxt_S;		
+			if (nxt_S <= sz) S = nxt_S;
 		}
 	}
 }
 
-void saveGame(int XX, int YY, vector<ii> Cache, int Xscore, int Oscore, string name1, string name2, string& nameFile) {
+void saveGame(int XX, int YY, vector<ii> Cache, int Xscore, int Oscore, string name1, string name2, string& nameFile, int winStreak) {
 	if (nameFile == "") {
 	insertName:
 		drawStatus(XX - 31, YY + 2 * BOARD_SIZE - 1, 2);
@@ -219,7 +219,7 @@ void saveGame(int XX, int YY, vector<ii> Cache, int Xscore, int Oscore, string n
 
 	// Save file to PC
 	ofstream File(nameFile + ".txt");
-	File << Xscore << " " << Oscore << '\n';
+	File << winStreak << " " << Xscore << " " << Oscore << '\n';
 	File << name1 << " " << name2 << '\n';
 
 	for (const auto& tmp : Cache) {
@@ -227,31 +227,49 @@ void saveGame(int XX, int YY, vector<ii> Cache, int Xscore, int Oscore, string n
 	} File.close();
 }
 
-void loadFromFile(string nameFile, vector<ii>& Cache, int& Xscore, int& Oscore, string& name1, string& name2) {
+void loadFromFile(string nameFile, vector<ii>& Cache, int& Xscore, int& Oscore, string& name1, string& name2, int& winStreak) {
 	Cache.clear();
 	nameFile += ".txt";
 	ifstream file(nameFile);
 	int x, y;
+	string firstLine;
+	getline(file, firstLine); // Đọc dòng đầu tiên (chứa điểm số)
+	stringstream ss(firstLine);
+	int val1, val2, val3;
 
-	file >> Xscore >> Oscore >> name1 >> name2;
+	if (ss >> val1 >> val2 >> val3) { // Định dạng mới: winStreak Xscore Oscore
+		winStreak = val1;
+		Xscore = val2;
+		Oscore = val3;
+	}
+	else { // Định dạng cũ: Xscore Oscore
+		stringstream ss_old(firstLine);
+		ss_old >> val1 >> val2;
+		winStreak = 5; // Mặc định 5 cho các file save cũ
+		Xscore = val1;
+		Oscore = val2;
+	}
+
+	file >> name1 >> name2; // Đọc tên người chơi từ dòng tiếp theo
+
 	while (file >> x >> y) Cache.emplace_back(x, y);
 	file.close();
 }
 
-void pullList() {		
+void pullList() {
 	string s; fileNames.clear();
 	ifstream file("ListNameFiles.txt");
 	while (file >> s) fileNames.emplace_back(s);
 	file.close();
 }
 
-void pushList() {		
+void pushList() {
 	ofstream File("ListNameFiles.txt");
 	for (string s : fileNames) File << s << '\n';
 	File.close();
 }
 
-void deleteFile(string nameFile) {	
+void deleteFile(string nameFile) {
 	nameFile += ".txt";
 	remove(nameFile.c_str());
 }
