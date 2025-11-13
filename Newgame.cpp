@@ -101,31 +101,25 @@ bool putname(int XX, int YY, string& str) {   //tao o van ban de nhap ten
 
 int getWinStreak(int XX, int YY) {
 	int currentStreak = 5; // Mặc định
-	int menuY = YY + 7; // Vị trí bên dưới ô nhập tên
-
-	drawBoardMenu(XX - 5, menuY - 1, 31, 15, " So nuoc de thang: ");
 
 	while (true) {
-		// Vẽ lựa chọn hiện tại
-		string streakStr = "      < " + to_string(currentStreak) + " >      ";
-		drawBoardMenu(XX + 3, menuY + 1, 20, 14, streakStr); // 14 = màu đã chọn
-
-		int _in = nextMove();
-
+		string streakStr = "  < " + to_string(currentStreak) + " >  "; 
+		drawBoardMenu(XX - 5, YY + 7, 21, 15, " So nuoc de thang: ");
+		drawBoardMenu(XX - 5 + 21, YY + 7, 10, 14, streakStr);
+				int _in = nextMove();
 		if (_in == 5) return 0; // Esc
 		if (_in == 0) return currentStreak; // Enter
 
-		if (_in == 2 || _in == 22) { // Mũi tên trái
+		if ((_in == 2 || _in == 22) || (_in == 3 || _in == 33)) {
 			currentStreak--;
 			if (currentStreak < 3) currentStreak = 7;
 		}
-		else if (_in == 4 || _in == 44) { // Mũi tên phải
+		else if ((_in == 4 || _in == 44) || (_in == 1 || _in == 11)) {
 			currentStreak++;
 			if (currentStreak > 7) currentStreak = 3;
 		}
-	}
+		}
 }
-
 
 
 void newGame(int XX, int YY) {
