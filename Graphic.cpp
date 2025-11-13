@@ -757,21 +757,18 @@ void drawAvatar1(int XX, int YY) {
 	gotoXY(XX + 2, YY + 1); cout << " o o ";
 	gotoXY(XX + 3, YY + 2); cout << " | ";
 	gotoXY(XX + 2, YY + 3); cout << "\\___/";
-	gotoXY(XX + 2, YY + 4); cout << " P 1 ";
 }
 void drawAvatar2(int XX, int YY) {
 	setColor(15, 11);
 	gotoXY(XX + 2, YY + 1); cout << " > < ";
 	gotoXY(XX + 3, YY + 2); cout << " v ";
 	gotoXY(XX + 2, YY + 3); cout << "(___)";
-	gotoXY(XX + 2, YY + 4); cout << " P 2 ";
 }
 void drawAvatar3(int XX, int YY) {
 	setColor(15, 11);
 	gotoXY(XX + 2, YY + 1); cout << " . . ";
 	gotoXY(XX + 3, YY + 2); cout << " ~ ";
 	gotoXY(XX + 2, YY + 3); cout << " \\-/ ";
-	gotoXY(XX + 2, YY + 4); cout << " P 3 ";
 }
 void drawAvatar(int XX, int YY, int avatarID, int color) {
 	// Xoa avatar cu ben trong khung truoc khi ve
