@@ -103,10 +103,10 @@ int getWinStreak(int XX, int YY) {
 	int currentStreak = 5; // Mặc định
 
 	while (true) {
-		string streakStr = "  < " + to_string(currentStreak) + " >  "; 
-		drawBoardMenu(XX - 5, YY + 7, 21, 15, " So nuoc de thang: ");
+		string streakStr = "  < " + to_string(currentStreak) + " > ";
+		drawBoardMenu(XX - 5, YY + 7, 21, 15, " So co de thang: ");
 		drawBoardMenu(XX - 5 + 21, YY + 7, 10, 14, streakStr);
-				int _in = nextMove();
+		int _in = nextMove();
 		if (_in == 5) return 0; // Esc
 		if (_in == 0) return currentStreak; // Enter
 
@@ -118,7 +118,7 @@ int getWinStreak(int XX, int YY) {
 			currentStreak++;
 			if (currentStreak > 7) currentStreak = 3;
 		}
-		}
+	}
 }
 
 
