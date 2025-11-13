@@ -97,30 +97,36 @@ bool putname(int XX, int YY, string& str) {   //tao o van ban de nhap ten
 	return true; //Sau khi thoat vong lap ,tra ve 1 (true) bao hieu thanh cong.
 }
 
-	
-	
+
+
 void newGame(int XX, int YY) {
-	newgame:
+newgame:
 	/*------------------ DECOR ---------------------------*/
 	system("cls"); drawGAME_MOI(XX - 20, YY - 9);
 	/*----------------------------------------------------*/
 
 	/*----------------- Import Name  ---------------------*/
 	string name1, name2;
-	drawBoardMenu(XX-5, YY, 31, 15, " Ten nguoi choi 1: ");
-	if (!putname(XX + 14, YY + 1, name1 = "[nhap_ten]")) return;   // Name of player 1
+	drawBoardMenu(XX, YY, 31, 15, " Ten nguoi choi 1: ");
+	if (!putname(XX + 19, YY + 1, name1 = "[nhap_ten]")) return;   // Name of player 1
 
-	drawBoardMenu(XX - 5, YY + 3, 31, 15, " Ten nguoi choi 2: ");
-	if (!putname(XX + 14, YY + 4, name2 = "[nhap_ten]")) return;   // Name of player 2
+	drawBoardMenu(XX, YY + 3, 31, 15, " Ten nguoi choi 2: ");
+	if (!putname(XX + 19, YY + 4, name2 = "[nhap_ten]")) return;   // Name of player 2
+AvatarSelect:
+	int avatarP1 = selectAvatar(XX, YY + 2, name1);
 
-	if (help(61, 12, 0) == 1) {
-		startGame(true, XX + 3, YY, name1, name2, {}, "", 0, 0); // toa do XX = 61 + 3, YY = 12
+	// Kiem tra neu avatarP1 tra ve 0 (do nhan ESC)
+	if (avatarP1 == 0) goto newgame; // Quay lai man hinh dat ten
+
+	int avatarP2 = selectAvatar(XX, YY + 2, name2);
+	// Kiem tra neu avatarP2 tra ve 0 (do nhan ESC)
+	if (avatarP2 == 0) goto newgame; // Quay lai man hinh dat ten
+
+	if (help(61, 12, 0) == 1) { // Neu help tra ve 1 (Nhan Enter)
+		startGame(true, XX + 3, YY, name1, name2, avatarP1, avatarP2, {}, "", 0, 0);
 	}
-	else
-		goto newgame;
-	
-	
+	else // Neu help tra ve 0 (Nhan ESC)
+		goto AvatarSelect; // Quay lai man hinh chon avatar
+
+	/*----------------------------------------------------*/
 }
-
-
-

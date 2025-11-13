@@ -7,14 +7,13 @@
 #include "LoadGame.h"
 using namespace std;
 
-struct _Point 
+struct _Point
 {
-	int X, Y, opt; // tọa độ x, y trên màn hình và opt = 1 nếu là X, opt = -1 nếu là O
+	int X, Y, opt; // tọa độ x, y trên màn hình và opt = 1 nếu là x, opt = -1 nếu là o
 };
-
-int get_score(int a[]);
+long long consecutiveScore(int len, int openEnds, bool currentTurn);
+long long get_score(int a[], int player);
 bool valid(int x, int y); // tọa độ có hợp lệ hay không
-int evaluation();
-void startGame(bool isNewGame, int XX, int YY, string name1, string name2, vector<pair<int, int>> Data, string fileName, int Xscore, int Oscore);
-
+long long evaluation(int player); // trả về điểm trạng thái
+void startGame(bool isNewGame, int XX, int YY, string name1, string name2, int avatarP1, int avatarP2, vector<pair<int, int>> Data, string fileName, int Xscore, int Oscore);
 #endif
