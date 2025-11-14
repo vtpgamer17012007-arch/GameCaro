@@ -8,5 +8,6 @@ using namespace std;
 
 void newGame(int XX, int YY);
 bool putname(int XX, int YY, string& str);
+int getWinStreak(int XX, int YY);
 
 #endif
