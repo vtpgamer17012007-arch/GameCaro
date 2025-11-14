@@ -97,27 +97,87 @@ bool putname(int XX, int YY, string& str) {   //tao o van ban de nhap ten
 	return true; //Sau khi thoat vong lap ,tra ve 1 (true) bao hieu thanh cong.
 }
 
-	
-	
-void newGame(int XX, int YY) {
-	newgame:
-	/*------------------ DECOR ---------------------------*/
-	system("cls"); drawGAME_MOI(XX - 20, YY - 9);
-	/*----------------------------------------------------*/
-
-	/*----------------- Import Name  ---------------------*/
+void Name(int XX, int YY, bool isbot)
+{
+	system("cls");
+	drawGAME_MOI(XX - 20, YY - 9);
 	string name1, name2;
-	drawBoardMenu(XX-5, YY, 31, 15, " Ten nguoi choi 1: ");
+	drawBoardMenu(XX - 5, YY, 31, 15, " Ten nguoi choi 1: ");
 	if (!putname(XX + 14, YY + 1, name1 = "[nhap_ten]")) return;   // Name of player 1
-
-	drawBoardMenu(XX - 5, YY + 3, 31, 15, " Ten nguoi choi 2: ");
-	if (!putname(XX + 14, YY + 4, name2 = "[nhap_ten]")) return;   // Name of player 2
-
-	if (help(61, 12, 0) == 1) {
-		startGame(true, XX + 3, YY, name1, name2, {}, "", 0, 0); // toa do XX = 61 + 3, YY = 12
+	if (isbot == 0) {
+		drawBoardMenu(XX - 5, YY + 3, 31, 15, " Ten nguoi choi 2: ");
+		if (!putname(XX + 14, YY + 4, name2 = "[nhap_ten]")) return;   // Name of player 2
 	}
 	else
-		goto newgame;
+		name2 = "Bot Ngu VCL";
+
+	
+	if (help(61, 12, 0) == 1) {
+		startGame(true, isbot, XX + 3, YY, name1, name2, {}, "", 0, 0); // toa do XX = 61 + 3, YY = 12
+	}
+	
+}
+
+
+	
+void newGame(int XX, int YY) {
+	//newgame:
+	/*------------------ DECOR ---------------------------*/
+	system("cls"); 
+	/*----------------------------------------------------*/
+	
+
+	// sence choose game mode
+
+	struct _aboutMenu {
+
+		int X, Y, size, b_color;
+		string str;
+
+		void draw() {
+			drawBoardMenu(X, Y, size, b_color, str);
+		}
+	};
+
+	_aboutMenu s1[2], s2[2];  // s1: khong chon  ;  s2: chon
+	s1[0] = { XX, YY, 20, 15,     "     PLAYER VS BOT     " };
+	s1[1] = { XX, YY + 3, 20, 15, "     PLAYER VS PLAYER    " };
+	
+
+	s2[0] = { XX, YY, 20, 14,     ">>   PLAYER VS BOT   <<" };
+	s2[1] = { XX, YY + 3, 20, 14, ">>   PLAYER VS PLAYER  <<" };
+	
+
+	pullList();
+	int S = 0;   // con tro menu
+
+	while (true) {
+		/*------------------ DECOR ---------------------------*/
+		drawMODE(XX - 20, YY - 9);
+		for (int i = 0; i < 2; ++i)
+			s1[i].draw();
+		s2[S].draw();
+
+		/*----------------------------------------------------*/
+
+		ShowCur(0);
+		int _in = nextMove();
+
+		/*----------------- Menu selection -------------------*/
+		if (_in == 1 || _in == 11) S = (S + 1) % 2;        // Up
+		else if (_in == 3 || _in == 33) S = (S + 1) % 2;   // Down
+		else if (_in == 0) {				  // Enter
+			if (S == 0) Name(XX, YY, 1);
+			else if (S == 1) Name(XX, YY, 0);
+			else assert(false);
+			system("cls");
+		}
+		/*----------------------------------------------------*/
+	}
+	/*----------------- Import Name  ---------------------*/
+	
+
+	
 	
 	
 }

@@ -638,6 +638,13 @@ void drawGIAO_DAU(int XX, int YY) {
 	drawA(XX + 42, YY);
 	drawU(XX + 50, YY);
 }
+void drawMODE(int XX, int YY) {
+	drawM(XX + 1, YY);
+	drawO(XX + 8, YY);
+	drawD(XX + 16, YY);
+	drawE(XX + 24, YY);
+
+}
 
 void drawX_WIN(int XX, int YY) {
 	drawX(XX, YY, 4);

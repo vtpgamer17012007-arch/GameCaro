@@ -102,7 +102,7 @@ void loadGame(int XX, int YY) {
 						
 
 						loadFromFile(fileNames[S], Cache, Xscore, Oscore, name1, name2);
-						startGame(false, XX, YY, name1, name2, Cache, fileNames[S], Xscore, Oscore);
+						//startGame(false, XX, YY, name1, name2, Cache, fileNames[S], Xscore, Oscore);
 						return;
 					}
 
