@@ -35,6 +35,7 @@ void drawGIAO_DAU(int XX, int YY);
 void drawX_WIN(int XX, int YY);
 void drawO_WIN(int XX, int YY);
 void drawDRAW(int XX, int YY);
+void drawMODE(int XX, int YY);
 
 void drawAvatarFrame(int XX, int YY, int color);
 void drawAvatar1(int XX, int YY);

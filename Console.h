@@ -9,7 +9,7 @@ void setColor(int background_color, int text_color);
 void ShowCur(bool CursorVisibility);
 void curr_coordinate(int& x, int& y);
 int nextMove();
-void decorate_draw(int x, int y, const string &nameFile);
+void decorate_draw(int x, int y, const string& nameFile);
 void draw_square(int i, int j, int x, int y, int color);
 
 #endif

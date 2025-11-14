@@ -3,6 +3,7 @@
 #include "Newgame.h"
 #include "LoadGame.h"
 #include "library.h"
+
 #include <iostream>
 
 #define F first
@@ -18,7 +19,7 @@ vector<ii> Cache, winLine; // cache la vector luu vi tri X, O de luu game ||  wi
 
 
 
-int get_score(int a[])
+int get_score(int a[], int winStreak)
 {
     int Size = BOARD_SIZE + 2;
     long long score = 0;
@@ -28,7 +29,7 @@ int get_score(int a[])
         while (j + 1 < Size - 1 && a[i] == a[j + 1]) j++; // tinh X hoac O lien tiep bao nhieu quan
 
         int len = j - i + 1; // chieu dai cua so quan lien tiep
-        if (len == 5)
+        if (len >= winStreak)
             score += 100 * a[i]; // lay diem cua chuoi dang xet roi nhan voi -1 hoac 1 de ra diem cua O hoac X
         i = j; // gan lai i = j de tiep tuc xet tiep day con lai
     }
@@ -40,7 +41,7 @@ bool valid(int x, int y)
     return y > 0 && x > 0 && x <= BOARD_SIZE && y <= BOARD_SIZE;
 }
 
-int evaluation() // tinh diem chien thang. Diem chien thang la  == 100
+int evaluation(int winStreak) // tinh diem chien thang. Diem chien thang la  == 100
 {
     long long score = 0;
     int b[BOARD_SIZE + 2]; //tao mot mang tam de xet hang/ cot/ duong cheo
@@ -53,7 +54,7 @@ int evaluation() // tinh diem chien thang. Diem chien thang la  == 100
             else
                 b[k] = 2; //chan 2 dau cua mang
         }
-        score += get_score(b); // tinh diem cua hang
+        score += get_score(b, winStreak); // tinh diem cua hang
         if (abs(score) == 100) // xet xem da du diem thang chua
         {
             winLine.clear();
@@ -72,7 +73,7 @@ int evaluation() // tinh diem chien thang. Diem chien thang la  == 100
             else
                 b[k] = 2;
         }
-        score += get_score(b);
+        score += get_score(b, winStreak);
         if (abs(score) == 100)
         {
             winLine.clear();
@@ -91,7 +92,7 @@ int evaluation() // tinh diem chien thang. Diem chien thang la  == 100
             else
                 b[k] = 2;
         }
-        score += get_score(b);
+        score += get_score(b, winStreak);
         if (abs(score) == 100)
         {
             winLine.clear();
@@ -109,7 +110,7 @@ int evaluation() // tinh diem chien thang. Diem chien thang la  == 100
             else
                 b[k] = 2;
         }
-        score += get_score(b);
+        score += get_score(b, winStreak);
         if (abs(score) == 100)
         {
             winLine.clear();
@@ -128,7 +129,7 @@ int evaluation() // tinh diem chien thang. Diem chien thang la  == 100
             else
                 b[k] = 2;
         }
-        score += get_score(b);
+        score += get_score(b, winStreak);
         if (abs(score) == 100)
         {
             winLine.clear();
@@ -146,7 +147,7 @@ int evaluation() // tinh diem chien thang. Diem chien thang la  == 100
             else
                 b[k] = 2;
         }
-        score += get_score(b);
+        score += get_score(b, winStreak);
         if (abs(score) == 100)
         {
             winLine.clear();
@@ -183,7 +184,7 @@ void makeMove(int Turn, int x, int y) // make a move
     moveTo(x, y);
 }
 
-void displayWinLine() // Bold the winning line
+void displayWinLine(int winStreak) // Bold the winning line
 {
 #define getVal(i) status[winLine[i].F][winLine[i].S].opt
 
@@ -194,7 +195,7 @@ void displayWinLine() // Bold the winning line
             int j = i;
             while (j + 1 < (int)winLine.size() - 1 && getVal(i) == getVal(j + 1)) j++;
             int len = j - i + 1;
-            if (len >= 5)
+            if (len >= winStreak)
             {
                 for (int T = 0; T < 3; T++) // 3 times
                 {
@@ -222,25 +223,51 @@ void displayWinLine() // Bold the winning line
         }
     }
 }
+int Random()
+{
+    random_device rd;
+    mt19937 gen(rd());
+    std::uniform_int_distribution<> distrib(1, 15);
+    int d = distrib(gen);
+    return d;
+}
+void botMove(int &x, int &y, vector<pair<int,int>> a)
+{
+    int n = a.size();
+    bool check(0);
+    while (true) {
+        x = Random();
+        y = Random();
+        for (int i = 0; i < n; i++) {
+            if (x == a[i].first || y == a[i].second) {
+                check = 0;
+                break;
+            }
+            check = 1;
+        }
+        if (check) {
+            return;
+        }
+            
+    }
+    
+}
 
-void startGame(bool isNewGame, int XX, int YY, string name1, string name2, int avatarP1, int avatarP2, vector<ii> Data, string fileName, int Xscore, int Oscore)
+void startGame(bool isNewGame, bool isbot, int XX, int YY, string name1, string name2, int avatarP1, int avatarP2, vector<ii> Data, string fileName, int Xscore, int Oscore, int winStreak)
 {
 playAgain:
-
+    system("cls");
     int P1_Avatar_X = (XX - 25) + 4 * BOARD_SIZE + 7;
     int P1_Avatar_Y = (YY - 2) + 5;
     int P2_Avatar_X = (XX - 25) - 14;
     int P2_Avatar_Y = (YY - 2) + 5;
-
-    system("cls");
-
     int x, y;
     Cache.clear();
     winLine.clear();
     ShowCur(1);
     drawBoard(XX, YY, name1, name2, avatarP1, avatarP2, Xscore, Oscore, fileName);
 
-    if (isNewGame) // if it is a new game then reset everything
+    if (isNewGame) // if it is a new game then reset e verything
     {
         Turn = 1;
         x = 8, y = 8;
@@ -264,7 +291,7 @@ playAgain:
     }
 
 
-    while (abs(evaluation()) < 100) // while the game is not over then keep playing
+    while (abs(evaluation(winStreak)) < 100) // while the game is not over then keep playing
     {
 
         if (Turn == 1) {
@@ -280,20 +307,31 @@ playAgain:
 
         while (true)
         {
-            int Key = nextMove();
+            int Key;
+            if(Turn != -1 || !isbot)
+                Key = nextMove();
             if (Turn == 1) { // turn X - A, W, S, D
+                
                 if (Key == 1 && x > 1) x -= 1;
                 if (Key == 2 && y > 1) y -= 1;
                 if (Key == 3 && x < BOARD_SIZE) x += 1;
                 if (Key == 4 && y < BOARD_SIZE) y += 1;
                 if (Key == 10 && status[x][y].opt == 0) break;
             }
-            else { // turn O - 4 arrows
-                if (Key == 11 && x > 1) x -= 1;
-                if (Key == 22 && y > 1) y -= 1;
-                if (Key == 33 && x < BOARD_SIZE) x += 1;
-                if (Key == 44 && y < BOARD_SIZE) y += 1;
-                if (Key == 0 && status[x][y].opt == 0) break;
+            else {// turn O - 4 arrows
+                if (isbot) {
+                    botMove(x,y,Cache);
+                    break;
+                }
+                else {
+               
+                    if (Key == 11 && x > 1) x -= 1;
+                    if (Key == 22 && y > 1) y -= 1;
+                    if (Key == 33 && x < BOARD_SIZE) x += 1;
+                    if (Key == 44 && y < BOARD_SIZE) y += 1;
+                    if (Key == 0 && status[x][y].opt == 0) break;
+                }
+                
             }
 
 
@@ -324,9 +362,9 @@ playAgain:
                     } moveTo(x, y);
                 }
             }
-            if (Key == 7) { // save game
-                saveGame(XX, YY, Cache, Xscore, Oscore, name1, name2, avatarP1, avatarP2, fileName);
-            }
+            //if (Key == 7) { // save game
+                //saveGame(XX, YY, Cache, Xscore, Oscore, name1, name2, avatarP1, avatarP2, fileName);
+            //}
             moveTo(x, y);
         }
 
@@ -341,7 +379,7 @@ playAgain:
     }
 
     ShowCur(0);
-    displayWinLine();
+    displayWinLine(winStreak);
     system("cls");
     drawGIAO_DAU(XX - 20, YY - 9);
     drawPopUp(XX - 27, YY + 3, 16, 74);
