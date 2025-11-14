@@ -40,8 +40,8 @@ void loadGame(int XX, int YY) {
 		}
 	}
 
-	system("cls"); // lam sach man hinh
-	drawCHOI_TIEP(XX - 19, YY - 9); // ve chu load game
+	system("cls"); // làm sach man hinh
+	drawCHOI_TIEP(XX - 26, YY - 9); // ve chu load game
 	drawPopUp(XX - 33, YY - 1, 20, 86); // ve khung pop up 
 	/*----------------------------------------------------*/
 
@@ -64,7 +64,7 @@ void loadGame(int XX, int YY) {
 		else if (S == -1) continue;		// No files were saved
 
 		if (_in == 0) {
-			_aboutMenu s3[3], s4[3];	// s3: ko chon, s4: chon
+			_aboutMenu s3[3], s4[3];	// s3: unselect, s4: select
 			s3[0] = { XX - 12, YY + 15, 16, 15, "     CHOI     " };
 			s3[1] = { XX + 8, YY + 15, 16, 15,  "     XOA      " };
 			s3[2] = { XX + 28, YY + 15, 17, 15, "    DOI TEN    " };
@@ -99,10 +99,11 @@ void loadGame(int XX, int YY) {
 						vector<ii> Cache;
 						int Xscore, Oscore, winStreak;
 						string name1, name2;
+						int avatarP1, avatarP2;
 
 
-						loadFromFile(fileNames[S], Cache, Xscore, Oscore, name1, name2, winStreak);
-						startGame(false, 1 ,XX, YY, name1, name2, Cache, fileNames[S], Xscore, Oscore, winStreak);
+						loadFromFile(fileNames[S], Cache, Xscore, Oscore, name1, name2, avatarP1, avatarP2, winStreak);
+						startGame(false, XX, YY, name1, name2, avatarP1, avatarP2, Cache, fileNames[S], Xscore, Oscore , winStreak);
 						return;
 					}
 
@@ -121,19 +122,19 @@ void loadGame(int XX, int YY) {
 						--sz;  S = min(S, sz);
 
 					}
-					else {			// doi ten
+					else {			// Rename file
 						setColor(co_theme);
 						gotoXY(XX - 29, YY + 15); cout << "                                                                               ";
 						gotoXY(XX - 29, YY + 16); cout << "                                                                               ";
 						gotoXY(XX - 29, YY + 17); cout << "                                                                               ";
 
-						// them ten moi
+						// Import new name
 					renameFile:
 						string tmp;
 						gotoXY(XX - 24, YY + 16); cout << " Ten Moi:                                                         ";
 						if (!putname(XX - 13, YY + 16, tmp = fileNames[S])) continue;
 
-						// kiem tra co trung ten khong
+						// Check the same name
 						bool checkSame = 0;
 						for (int t = 0; t <= sz; ++t)
 							if (t != S && fileNames[t] == tmp)
@@ -217,17 +218,16 @@ void saveGame(int XX, int YY, vector<ii> Cache, int Xscore, int Oscore, string n
 	drawName_Board(XX + 4 * BOARD_SIZE - 30, YY + 2 * BOARD_SIZE - 1, nameFile);
 	pushList();
 
-	// Save file to PC
+	// Save game to PC
 	ofstream File(nameFile + ".txt");
 	File << winStreak << " " << Xscore << " " << Oscore << '\n';
 	File << name1 << " " << name2 << '\n';
-
+	File << avatarP1 << " " << avatarP2 << "\n";
 	for (const auto& tmp : Cache) {
 		File << tmp.first << " " << tmp.second << "\n";
 	} File.close();
 }
-
-void loadFromFile(string nameFile, vector<ii>& Cache, int& Xscore, int& Oscore, string& name1, string& name2, int& winStreak) {
+void loadFromFile(string nameFile, vector<ii>& Cache, int& Xscore, int& Oscore, string& name1, string& name2, int& avatarP1, int& avatarP2,  int& winStreak){	// Load data from file is saved
 	Cache.clear();
 	nameFile += ".txt";
 	ifstream file(nameFile);
@@ -252,11 +252,12 @@ void loadFromFile(string nameFile, vector<ii>& Cache, int& Xscore, int& Oscore, 
 
 	file >> name1 >> name2; // Đọc tên người chơi từ dòng tiếp theo
 
+	file >> Xscore >> Oscore >> name1 >> name2>>avatarP1>>avatarP2;
 	while (file >> x >> y) Cache.emplace_back(x, y);
 	file.close();
 }
 
-void pullList() {
+void pullList() {		// Update list file is saved to fileNames
 	string s; fileNames.clear();
 	ifstream file("ListNameFiles.txt");
 	while (file >> s) fileNames.emplace_back(s);

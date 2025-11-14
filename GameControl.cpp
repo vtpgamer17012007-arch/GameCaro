@@ -253,15 +253,19 @@ void botMove(int &x, int &y, vector<pair<int,int>> a)
     
 }
 
-void startGame(bool isNewGame, bool isbot, int XX, int YY, string name1, string name2, vector<ii> Data, string fileName, int Xscore, int Oscore, int winStreak)
+void startGame(bool isNewGame, bool isbot, int XX, int YY, string name1, string name2, int avatarP1, int avatarP2, vector<ii> Data, string fileName, int Xscore, int Oscore, int winStreak)
 {
 playAgain:
     system("cls");
-
+    int P1_Avatar_X = (XX - 25) + 4 * BOARD_SIZE + 7;
+    int P1_Avatar_Y = (YY - 2) + 5;
+    int P2_Avatar_X = (XX - 25) - 14;
+    int P2_Avatar_Y = (YY - 2) + 5;
     int x, y;
     Cache.clear();
+    winLine.clear();
     ShowCur(1);
-    drawBoard(XX, YY, name1, name2, Xscore, Oscore, fileName);
+    drawBoard(XX, YY, name1, name2, avatarP1, avatarP2, Xscore, Oscore, fileName);
 
     if (isNewGame) // if it is a new game then reset e verything
     {
@@ -291,12 +295,12 @@ playAgain:
     {
 
         if (Turn == 1) {
-            drawX(XX - 18 + 4 * BOARD_SIZE, YY + 3, 4);
-            drawO(XX - 39, YY + 3, 8);
+            drawX(XX - 18 + 4 * BOARD_SIZE, YY + 7, 4);
+            drawO(XX - 39, YY + 7, 8);
         }
         else {
-            drawO(XX - 39, YY + 3, 1);
-            drawX(XX - 18 + 4 * BOARD_SIZE, YY + 3, 8);
+            drawO(XX - 39, YY + 7, 1);
+            drawX(XX - 18 + 4 * BOARD_SIZE, YY + 7, 8);
         } moveTo(x, y);
 
 
@@ -349,17 +353,17 @@ playAgain:
                     makeMove(0, x, y);
                     Turn *= -1;
                     if (Turn == 1) {
-                        drawX(XX - 18 + 4 * BOARD_SIZE, YY + 3, 4);
-                        drawO(XX - 39, YY + 3, 8);
+                        drawX(XX - 18 + 4 * BOARD_SIZE, YY + 7, 4);
+                        drawO(XX - 39, YY + 7, 8);
                     }
                     else {
-                        drawO(XX - 39, YY + 3, 1);
-                        drawX(XX - 18 + 4 * BOARD_SIZE, YY + 3, 8);
+                        drawO(XX - 39, YY + 7, 1);
+                        drawX(XX - 18 + 4 * BOARD_SIZE, YY + 7, 8);
                     } moveTo(x, y);
                 }
             }
             //if (Key == 7) { // save game
-            //    saveGame(XX, YY, Cache, Xscore, Oscore, name1, name2, fileName, );
+                //saveGame(XX, YY, Cache, Xscore, Oscore, name1, name2, avatarP1, avatarP2, fileName);
             //}
             moveTo(x, y);
         }

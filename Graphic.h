@@ -21,6 +21,7 @@ void drawN(int XX, int YY);
 void drawW(int XX, int YY);
 void drawH(int XX, int YY);
 void drawP(int XX, int YY);
+void drawV(int XX, int YY);
 void drawX(int XX, int YY, int co_txt);
 void drawI(int XX, int YY);
 
@@ -28,6 +29,7 @@ void drawCARO(int XX, int YY);
 void drawTHONG_TIN(int XX, int YY);
 void drawCHOI_TIEP(int XX, int YY);
 void drawGAME_MOI(int XX, int YY);
+void drawCHONAVATAR(int XX, int YY);
 void drawHUONG_DAN(int XX, int YY);
 void drawGIAO_DAU(int XX, int YY);
 void drawX_WIN(int XX, int YY);
@@ -35,7 +37,13 @@ void drawO_WIN(int XX, int YY);
 void drawDRAW(int XX, int YY);
 void drawMODE(int XX, int YY);
 
-void drawBoard(int startX, int startY, string name1, string name2, int Xscore, int Oscore, string fileName);
+void drawAvatarFrame(int XX, int YY, int color);
+void drawAvatar1(int XX, int YY);
+void drawAvatar2(int XX, int YY);
+void drawAvatar3(int XX, int YY);
+void drawAvatar(int XX, int YY, int avatarID, int color);
+
+void drawBoard(int Xi, int Yi, string name1, string name2, int avatarP1, int avatarP2, int Xscore, int Oscore, string fileName);
 void drawBoardMenu(int XX, int YY, int size, int b_color, string str);
 void drawPopUp(int XX, int YY, int h, int w);
 void drawName_Board(int XX, int YY, string fileName);
