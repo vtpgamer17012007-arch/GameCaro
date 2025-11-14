@@ -837,35 +837,26 @@ void drawBoard(int Xi, int Yi, string name1, string name2, int avatarP1, int ava
 		}
 
 
-
-	// Tọa độ cột hiển thị (Đẩy xa ra khỏi bàn cờ)
 	int P2_X = XX - 22;               // Bên Trái (O)
 	int P1_X = XX + 4 * BOARD_SIZE + 8; // Bên Phải (X)
-	int Panel_Y = YY + 2;             // Dòng bắt đầu vẽ
+	int Panel_Y = YY + 2;             
 
-	// ==> PLAYER 2 (TRÁI)
 	drawAvatarFrame(P2_X + 3, Panel_Y - 1, 14); // Khung Vàng
 	drawAvatar(P2_X + 3, Panel_Y - 1, avatarP2, 15);
 	gotoXY(P2_X + 13, Panel_Y + 2); cout << "Score: " << Oscore;
 
 	setColor(15, 0);
 	int name2Len = name2.length();
-	gotoXY(P2_X + 8 - (name2Len / 2), Panel_Y + 5); // Tên căn giữa
+	gotoXY(P2_X + 8 - (name2Len / 2), Panel_Y + 5);
 	cout << name2;
 
-	/*drawO(P2_X +2, Panel_Y +3, 8);*/ // Ký hiệu O
-
-
-	// ==> PLAYER 1 (PHẢI)
 	drawAvatarFrame(P1_X + 4, Panel_Y - 1, 14);
 	drawAvatar(P1_X + 4, Panel_Y - 1, avatarP1, 15);
 	gotoXY(P1_X - 6, Panel_Y + 2); cout << "Score: " << Xscore;
 	setColor(15, 0);
 	int name1Len = (int)name1.length();
-	gotoXY(P1_X + 8 - (name1Len / 2), Panel_Y + 5); // Tên căn giữa
+	gotoXY(P1_X + 8 - (name1Len / 2), Panel_Y + 5);
 	cout << name1;
-
-	/*drawX(P1_X + 1, Panel_Y + 6, 8)*/; // Ký hiệu X
 
 
 	// Footer
@@ -961,7 +952,6 @@ int help(int Xi, int Yi, int locate) {
 		gotoXY(XX + 41, YY + i);
 		cout << "|";
 	}
-
 	setColor(11, 0);
 	gotoXY(XX + 12, YY + 1);
 	cout << "HUONG DAN BAN PHIM";
@@ -1015,11 +1005,13 @@ int help(int Xi, int Yi, int locate) {
 	}
 	else {
 		gotoXY(XX + 12, YY + 13);
-		cout << "<< Bam Enter de tiep tuc || Bam Esc de tro lai chon avatar>>";
+		cout << "<< Bam Enter de tiep tuc || Bam Esc de tro lai nhap ten>>";
 		setColor(co_theme);
 		char ch = _getch();
-		if (ch == 13) return 1;		// Nhan "enter" de tiep tuc choi
-		else if (ch == 27) return 0;		// Nhan "ESC" de quay ve nhap ten
+		while (ch != 13 || ch != 27) {
+			if (ch == 13) return 1;		// Nhan "enter" de tiep tuc choi
+			else return 0;		// Nhan "ESC" de quay ve nhap ten
+		}
 	}
 	return 0;
 }

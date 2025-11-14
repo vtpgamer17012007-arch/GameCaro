@@ -227,13 +227,13 @@ void saveGame(int XX, int YY, vector<ii> Cache, int Xscore, int Oscore, string n
 		File << tmp.first << " " << tmp.second << "\n";
 	} File.close();
 }
-void loadFromFile(string nameFile, vector<ii>& Cache, int& Xscore, int& Oscore, string& name1, string& name2, int& avatarP1, int& avatarP2) {	// Load data from file is saved
+void loadFromFile(string nameFile, vector<ii>& Cache, int& Xscore, int& Oscore, string& name1, string& name2, int& avatarP1, int& avatarP2){	// Load data from file is saved
 	Cache.clear();
 	nameFile += ".txt";
 	ifstream file(nameFile);
 	int x, y;
 
-	file >> Xscore >> Oscore >> name1 >> name2 >> avatarP1 >> avatarP2;
+	file >> Xscore >> Oscore >> name1 >> name2>>avatarP1>>avatarP2;
 	while (file >> x >> y) Cache.emplace_back(x, y);
 	file.close();
 }
