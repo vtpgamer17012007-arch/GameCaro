@@ -160,28 +160,55 @@ int evaluation(int winStreak) // tinh diem chien thang. Diem chien thang la  == 
     return score;
 }
 
-void makeMove(int Turn, int x, int y) // make a move
+void makeMove(int Turn, int x, int y, bool isHighlighted = false) // make a move
 {
     status[x][y].opt = Turn;
 
-    moveTo(x, y);
+    int drawX = status[x][y].X - 1;
+    int drawY = status[x][y].Y;
+    gotoXY(drawX, drawY);
 
-    if (Turn == 1)
-    {
-        setColor(15, 4);
-        cout << 'X';
+    if (isHighlighted) {
+        //Ve nuoc di highlight 
+        int fillColor = 10;
+
+        //Ve X
+        if (Turn == 1) {
+            setColor(fillColor, 4);
+            cout << " X ";
+        }
+        else if (Turn == -1) {
+            setColor(fillColor, 1);
+            cout << " O ";
+        }
+        else { //Xoa o khi Undo
+            setColor(15, 15);
+            cout << "   ";
+        }
     }
-    else if (Turn == -1)
-    {
-        setColor(15, 1);
-        cout << 'O';
+    else {
+        //Tao mot bien de luu mau nen goc
+        int bgColor = 15;
+
+        if (Turn == 1)
+        {
+            setColor(bgColor, 4);
+            cout << " X ";
+        }
+        else if (Turn == -1)
+        {
+            setColor(bgColor, 1);
+            cout << " O ";
+        }
+        else
+        {
+            setColor(15, 15);
+            cout << "   ";
+        }
     }
-    else
-    {
-        setColor(15, 15);
-        cout << " ";
-    }
-    moveTo(x, y);
+
+    //Cap nhat con tro
+    gotoXY(status[x][y].X, status[x][y].Y);
 }
 
 void displayWinLine(int winStreak) // Bold the winning line
@@ -275,11 +302,12 @@ playAgain:
     }
     else { // if not, use the previous data for the game
         Turn = 1;
-
-        for (auto tmp : Data) {
-            makeMove(Turn, tmp.F, tmp.S);
+        //Dung for de xet nuoc di cuoi
+        for (int i = 0; i < Data.size(); i++) {
+            ii tmp = Data[i];
+            bool isLastMove = (i == Data.size() - 1);  //Kiem tra co phai nuoc cuoi khong
+            makeMove(Turn, tmp.F, tmp.S, isLastMove);  //Highlight nuoc cuoi len
             Turn *= -1;
-
         }
 
         Cache = Data;
@@ -353,13 +381,20 @@ playAgain:
                     makeMove(0, x, y);
                     Turn *= -1;
                     if (Turn == 1) {
-                        drawX(XX - 18 + 4 * BOARD_SIZE, YY + 7, 4);
-                        drawO(XX - 39, YY + 7, 8);
+                        drawX(XX - 24 + 4 * BOARD_SIZE, YY + 3, 4); //sua o day
+                        drawO(XX - 25 + 4 * BOARD_SIZE, YY + 18, 8); //o day
                     }
                     else {
-                        drawO(XX - 39, YY + 7, 1);
-                        drawX(XX - 18 + 4 * BOARD_SIZE, YY + 7, 8);
-                    } moveTo(x, y);
+                        drawO(XX - 25 + 4 * BOARD_SIZE, YY + 18, 1); //o day
+                        drawX(XX - 24 + 4 * BOARD_SIZE, YY + 3, 8);  // o day
+                    }
+                    //Highlight lai nuoc di cuoi cung moi
+                    if (!Cache.empty()) {
+                        ii newLastMove = Cache.back();
+                        int lastTurn = status[newLastMove.F][newLastMove.S].opt;
+                        makeMove(lastTurn, newLastMove.F, newLastMove.S, true);
+                    }
+                    moveTo(x, y);
                 }
             }
             //if (Key == 7) { // save game
@@ -368,8 +403,15 @@ playAgain:
             moveTo(x, y);
         }
 
+
+        // Bo highlight nuoc di truoc do
+        if (!Cache.empty()) {
+            ii prevMove = Cache.back();
+            int prevTurn = status[prevMove.F][prevMove.S].opt;  //lay luot cua nuoc di truoc do
+            makeMove(prevTurn, prevMove.F, prevMove.second, false); //Ve lai mau binh thuong
+        }
         Cache.push_back({ x, y });
-        makeMove(Turn, x, y);
+        makeMove(Turn, x, y,true);
         Turn *= -1;
 
         if (Cache.size() == BOARD_SIZE * BOARD_SIZE) {
