@@ -19,7 +19,7 @@ vector<ii> Cache, winLine; // cache la vector luu vi tri X, O de luu game ||  wi
 
 
 
-int get_score(int a[])
+int get_score(int a[], int winStreak)
 {
     int Size = BOARD_SIZE + 2;
     long long score = 0;
@@ -29,7 +29,7 @@ int get_score(int a[])
         while (j + 1 < Size - 1 && a[i] == a[j + 1]) j++; // tinh X hoac O lien tiep bao nhieu quan
 
         int len = j - i + 1; // chieu dai cua so quan lien tiep
-        if(len == 5)
+        if (len >= winStreak)
             score += 100 * a[i]; // lay diem cua chuoi dang xet roi nhan voi -1 hoac 1 de ra diem cua O hoac X
         i = j; // gan lai i = j de tiep tuc xet tiep day con lai
     }
@@ -41,7 +41,7 @@ bool valid(int x, int y)
     return y > 0 && x > 0 && x <= BOARD_SIZE && y <= BOARD_SIZE;
 }
 
-int evaluation() // tinh diem chien thang. Diem chien thang la  == 100
+int evaluation(int winStreak) // tinh diem chien thang. Diem chien thang la  == 100
 {
     long long score = 0;
     int b[BOARD_SIZE + 2]; //tao mot mang tam de xet hang/ cot/ duong cheo
@@ -54,7 +54,7 @@ int evaluation() // tinh diem chien thang. Diem chien thang la  == 100
             else
                 b[k] = 2; //chan 2 dau cua mang
         }
-        score += get_score(b); // tinh diem cua hang
+        score += get_score(b, winStreak); // tinh diem cua hang
         if (abs(score) == 100) // xet xem da du diem thang chua
         {
             winLine.clear();
@@ -73,7 +73,7 @@ int evaluation() // tinh diem chien thang. Diem chien thang la  == 100
             else
                 b[k] = 2;
         }
-        score += get_score(b);
+        score += get_score(b, winStreak);
         if (abs(score) == 100)
         {
             winLine.clear();
@@ -92,7 +92,7 @@ int evaluation() // tinh diem chien thang. Diem chien thang la  == 100
             else
                 b[k] = 2;
         }
-        score += get_score(b);
+        score += get_score(b, winStreak);
         if (abs(score) == 100)
         {
             winLine.clear();
@@ -110,7 +110,7 @@ int evaluation() // tinh diem chien thang. Diem chien thang la  == 100
             else
                 b[k] = 2;
         }
-        score += get_score(b);
+        score += get_score(b, winStreak);
         if (abs(score) == 100)
         {
             winLine.clear();
@@ -129,7 +129,7 @@ int evaluation() // tinh diem chien thang. Diem chien thang la  == 100
             else
                 b[k] = 2;
         }
-        score += get_score(b);
+        score += get_score(b, winStreak);
         if (abs(score) == 100)
         {
             winLine.clear();
@@ -147,7 +147,7 @@ int evaluation() // tinh diem chien thang. Diem chien thang la  == 100
             else
                 b[k] = 2;
         }
-        score += get_score(b);
+        score += get_score(b, winStreak);
         if (abs(score) == 100)
         {
             winLine.clear();
@@ -163,15 +163,15 @@ int evaluation() // tinh diem chien thang. Diem chien thang la  == 100
 void makeMove(int Turn, int x, int y) // make a move
 {
     status[x][y].opt = Turn;
-    
+
     moveTo(x, y);
-    
+
     if (Turn == 1)
     {
         setColor(15, 4);
         cout << 'X';
     }
-    else if(Turn == -1)
+    else if (Turn == -1)
     {
         setColor(15, 1);
         cout << 'O';
@@ -184,18 +184,18 @@ void makeMove(int Turn, int x, int y) // make a move
     moveTo(x, y);
 }
 
-void displayWinLine() // Bold the winning line
+void displayWinLine(int winStreak) // Bold the winning line
 {
 #define getVal(i) status[winLine[i].F][winLine[i].S].opt
-    
+
     for (int i = 0; i < winLine.size(); i++)
     {
-        if (abs(getVal(i)) == 1) 
+        if (abs(getVal(i)) == 1)
         {
             int j = i;
             while (j + 1 < (int)winLine.size() - 1 && getVal(i) == getVal(j + 1)) j++;
             int len = j - i + 1;
-            if (len >= 5)
+            if (len >= winStreak)
             {
                 for (int T = 0; T < 3; T++) // 3 times
                 {
@@ -253,9 +253,9 @@ void botMove(int &x, int &y, vector<pair<int,int>> a)
     
 }
 
-void startGame(bool isNewGame, bool isbot, int XX, int YY, string name1, string name2, vector<ii> Data, string fileName, int Xscore, int Oscore)
+void startGame(bool isNewGame, bool isbot, int XX, int YY, string name1, string name2, vector<ii> Data, string fileName, int Xscore, int Oscore, , int winStreak)
 {
-    playAgain:
+playAgain:
     system("cls");
 
     int x, y;
@@ -287,9 +287,9 @@ void startGame(bool isNewGame, bool isbot, int XX, int YY, string name1, string 
     }
 
 
-    while (abs(evaluation()) < 100) // while the game is not over then keep playing
+    while (abs(evaluation(winStreak)) < 100) // while the game is not over then keep playing
     {
-        
+
         if (Turn == 1) {
             drawX(XX - 18 + 4 * BOARD_SIZE, YY + 3, 4);
             drawO(XX - 39, YY + 3, 8);
@@ -299,8 +299,8 @@ void startGame(bool isNewGame, bool isbot, int XX, int YY, string name1, string 
             drawX(XX - 18 + 4 * BOARD_SIZE, YY + 3, 8);
         } moveTo(x, y);
 
-      
-        
+
+
         while (true)
         {
             int Key;
@@ -329,8 +329,8 @@ void startGame(bool isNewGame, bool isbot, int XX, int YY, string name1, string 
                 }
                 
             }
-            
-            
+
+
             if (Key == 5) { // exit game
                 drawStatus(XX - 31, YY + 2 * BOARD_SIZE - 1, 4);
                 while (true) {
@@ -341,7 +341,7 @@ void startGame(bool isNewGame, bool isbot, int XX, int YY, string name1, string 
             }
             if (Key == 6) // Undo
             {
-                if(!Cache.empty())
+                if (!Cache.empty())
                 {
                     x = Cache.back().F;
                     y = Cache.back().S;
@@ -358,16 +358,16 @@ void startGame(bool isNewGame, bool isbot, int XX, int YY, string name1, string 
                     } moveTo(x, y);
                 }
             }
-            //if (Key == 7) { // save game
-            //    saveGame(XX, YY, Cache, Xscore, Oscore, name1, name2, fileName);
-            //}
+            if (Key == 7) { // save game
+                saveGame(XX, YY, Cache, Xscore, Oscore, name1, name2, fileName);
+            }
             moveTo(x, y);
         }
-        
+
         Cache.push_back({ x, y });
         makeMove(Turn, x, y);
         Turn *= -1;
-        
+
         if (Cache.size() == BOARD_SIZE * BOARD_SIZE) {
             Turn = 0;
             break;
@@ -375,7 +375,7 @@ void startGame(bool isNewGame, bool isbot, int XX, int YY, string name1, string 
     }
 
     ShowCur(0);
-    displayWinLine();
+    displayWinLine(winStreak);
     system("cls");
     drawGIAO_DAU(XX - 20, YY - 9);
     drawPopUp(XX - 27, YY + 3, 16, 74);
@@ -393,7 +393,7 @@ void startGame(bool isNewGame, bool isbot, int XX, int YY, string name1, string 
     setColor(15, 8);  cout << "<< Nhan Y de tiep tuc hoac nhan N de thoat >>";
     setColor(15, 0);
 
-    
+
     // Hoi nguoi choi co muon choi lai van dau khong
     while (true) {
         char key = _getch();

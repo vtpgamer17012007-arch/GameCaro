@@ -11,8 +11,8 @@ typedef pair<int, int> ii;
 using namespace std;
 
 void loadGame(int XX, int YY);
-void saveGame(int XX, int YY, vector<ii> Cache, int Xscore, int Oscore, string name1, string name2, string& nameFile);
-void loadFromFile(string nameFile, vector<ii>& Cache, int& Xscore, int& Oscore, string& name1, string& name2);
+void saveGame(int XX, int YY, vector<ii> Cache, int Xscore, int Oscore, string name1, string name2, string& nameFile, int winStreak);
+void loadFromFile(string nameFile, vector<ii>& Cache, int& Xscore, int& Oscore, string& name1, string& name2, int& winStreak);
 void deleteFile(string nameFile);
 void pullList();
 void pushList();
