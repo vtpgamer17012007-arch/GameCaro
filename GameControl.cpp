@@ -18,7 +18,7 @@ _Point status[BOARD_SIZE + 5][BOARD_SIZE + 5];
 vector<ii> Cache, winLine;
 
 
-long long consecutiveScore(int len, int openEnds, bool currentTurn) // return the score of consecutive elements
+int consecutiveScore(int len, int openEnds, bool currentTurn) // return the score of consecutive elements
 {
     if (len < 5 && openEnds == 0) return 0;
     switch (len)
@@ -71,20 +71,20 @@ long long consecutiveScore(int len, int openEnds, bool currentTurn) // return th
         switch (openEnds)
         {
         case 2:
-            return (long long)1e10;
+            return (int) 1e10;
         case 1:
-            return (long long)1e10 - (long long)1e9;
+            return (int)1e10 - (int)1e9;
         case 0:
-            return (long long)1e10 - (long long)2e9;
+            return (int)1e10 - (int)2e9;
         }
     }
     return 0;
 }
 
-long long get_score(int a[], int player)
+int get_score(int a[], int player)
 {
     int Size = BOARD_SIZE + 2;
-    long long score = 0;
+    int score = 0;
     for (int i = 1; i < Size - 1; i++) if (abs(a[i]) == 1) // get consecutive equal elements 
     {
         int j = i;
@@ -103,9 +103,9 @@ bool valid(int x, int y)
     return y > 0 && x > 0 && x <= BOARD_SIZE && y <= BOARD_SIZE;
 }
 
-long long evaluation(int player) // evaluate a status
+int evaluation(int player) // evaluate a status
 {
-    long long score = 0;
+    int score = 0;
     int b[BOARD_SIZE + 2];
     for (int i = 1; i <= BOARD_SIZE; i++) // get a row
     {
@@ -252,7 +252,7 @@ void displayWinLine() // Bold the winning line
 {
 #define getVal(i) status[winLine[i].F][winLine[i].S].opt
 
-    for (int i = 0; i < winLine.size(); i++)
+    for (int i = 0; i < (int)winLine.size(); i++)
     {
         if (abs(getVal(i)) == 1)
         {
@@ -292,13 +292,12 @@ void displayWinLine() // Bold the winning line
 void startGame(bool isNewGame, int XX, int YY, string name1, string name2, int avatarP1, int avatarP2, vector<ii> Data, string fileName, int Xscore, int Oscore)
 {
 playAgain:
-    // Tinh toan vi tri avatar de su dung cho viec highlight
+   
     int P1_Avatar_X = (XX - 25) + 4 * BOARD_SIZE + 7;
     int P1_Avatar_Y = (YY - 2) + 5;
     int P2_Avatar_X = (XX - 25) - 14;
     int P2_Avatar_Y = (YY - 2) + 5;
 
-    srand(time(0));
     system("cls");
 
     int x, y;
@@ -307,158 +306,133 @@ playAgain:
     ShowCur(1);
     drawBoard(XX, YY, name1, name2, avatarP1, avatarP2, Xscore, Oscore, fileName);
 
-    if (isNewGame) // if it is a new game then reset everything
-    {
-        Turn = 1;
-        x = 8, y = 8;
-        for (int i = 0; i <= BOARD_SIZE + 4; i++)//Phải reset lại bàn cờ, nếu không sẽ bị thắng ảo do rác bộ nhớ
-            for (int j = 0; j <= BOARD_SIZE + 4; j++)
-                status[i][j].opt = 0;
-    }
-    else { // if not, use the previous data for the game
-        Turn = 1;
-
-        for (auto tmp : Data) {
-            makeMove(Turn, tmp.F, tmp.S);
-            Turn *= -1;
-            gotoXY(11, 13);
-            cout << Turn;
-        }
-
-        Cache = Data;
-        if (Data.empty()) x = y = 8;
-        else {
-            x = Data.back().F;
-            y = Data.back().S;
-        }
-    }
-
-
-    if (Turn == 1) {
-        drawX(XX - 18 + 4 * BOARD_SIZE, YY + 7, 4); // 4 = Do
-        drawO(XX - 39, YY + 7, 8);                 // 8 = Xam
-    }
-    else {
-        drawO(XX - 39, YY + 7, 1);                 // 1 = Xanh
-        drawX(XX - 18 + 4 * BOARD_SIZE, YY + 7, 8); // 8 = Xam
-    } moveTo(x, y);
-
-
-    while (true)
-    {
-        int Key = nextMove();
-        bool moveMade = false; //Dùng cờ hiệu để biết khi nào đã đánh cờ
-        if (Turn == 1) { // turn X - A, W, S, D
-            if (Key == 1 && x > 1) x -= 1;
-            else if (Key == 2 && y > 1) y -= 1;
-            else if (Key == 3 && x < BOARD_SIZE) x += 1;
-            else if (Key == 4 && y < BOARD_SIZE) y += 1;
-            else if (Key == 10 && status[x][y].opt == 0) {
-                Cache.push_back({ x, y });
-                makeMove(Turn, x, y);
-                moveMade = true; //đánh dấu đã đi
-            }
-        }
-        else { // turn O - 4 arrows
-            if (Key == 11 && x > 1) x -= 1;
-            if (Key == 22 && y > 1) y -= 1;
-            if (Key == 33 && x < BOARD_SIZE) x += 1;
-            if (Key == 44 && y < BOARD_SIZE) y += 1;
-            if (Key == 0 && status[x][y].opt == 0) {
-                Cache.push_back({ x, y });
-                makeMove(Turn, x, y);
-                moveMade = true;
-            }
-        }
-
-
-        if (Key == 5) { // exit game
-            drawStatus(XX - 31, YY + 2 * BOARD_SIZE - 1, 4);
-            while (true) {
-                char key = _getch();
-                if (key == 'N' || key == 'n') break;
-                else if (key == 'Y' || key == 'y') return;
-            } drawStatus(XX - 31, YY + 2 * BOARD_SIZE - 1, 1);
-        }
-        if (Key == 6) // Undo
+     if (isNewGame) // if it is a new game then reset everything
         {
-            if (!Cache.empty())
-            {
-                x = Cache.back().F;
-                y = Cache.back().S;
-                Cache.pop_back();
-                makeMove(0, x, y);
-                Turn *= -1;
-                if (Turn == 1) {
-                    drawX(XX - 18 + 4 * BOARD_SIZE, YY + 7, 4);
-                    drawO(XX - 39, YY + 7, 8);
-                }
-                else {
-                    drawO(XX - 39, YY + 7, 1);
-                    drawX(XX - 18 + 4 * BOARD_SIZE, YY + 7, 8);
-                } moveTo(x, y);
-            }
-        }
-        if (Key == 7) { // save game
-            saveGame(XX, YY, Cache, Xscore, Oscore, name1, name2, avatarP1, avatarP2, fileName);
-        }
-        moveTo(x, y);
-        if (moveMade)
-        {
-            long long score = evaluation(Turn);
-            if (abs(score) >= 1e8) {
-                break; // Thoát vòng lặp nếu thắng
-            }
-
-            if (Cache.size() == BOARD_SIZE * BOARD_SIZE) {
-                Turn = 0; // Hòa
-                break; // Thoát vòng lặp
-            }
-
-            Turn *= -1; // Đổi lượt
-
-            // Cập nhật UI lượt đi
-            if (Turn == 1) {
-                drawX(XX - 18 + 4 * BOARD_SIZE, YY + 7, 4);
-                drawO(XX - 39, YY + 7, 8);
-            }
-            else {
-                drawO(XX - 39, YY + 7, 1);
-                drawX(XX - 18 + 4 * BOARD_SIZE, YY + 7, 8);
-            }
+            Turn = 1;
+            x = 8, y = 8;
             moveTo(x, y);
         }
-    }
-    ShowCur(0);
-    displayWinLine();
-    system("cls");
-    drawGIAO_DAU(XX - 20, YY - 9);
-    drawPopUp(XX - 27, YY + 3, 16, 74);
-    if (Turn == 1)
-        drawX_WIN(XX - 8, YY + 7), Xscore++;    // X Wins
-    else if (Turn == -1)
-        drawO_WIN(XX - 8, YY + 7), Oscore++;    // O Wins
-    else drawDRAW(XX - 7, YY + 7);              // Draw
+        else { // if not, use the previous data for the game
+            Turn = 1;
 
-    gotoXY(XX - 9 - (Turn == -1), YY + 13);
-    for (int i = 0; i < 38; ++i)
-        cout << char(196);
+            for (auto tmp : Data) {
+                makeMove(Turn, tmp.F, tmp.S);
+                Turn *= -1;
 
-    gotoXY(XX - 9 - (Turn == -1), YY + 14);
-    setColor(15, 8);  cout << "<< Press Y to continue or N to exit >>";
-    setColor(15, 0);
+            }
 
-
-
-
-
-    // Check player want to play again
-    while (true) {
-        char key = _getch();
-        if (key == 'N' || key == 'n') break;
-        else if (key == 'Y' || key == 'y') {
-            isNewGame = 1;
-            goto playAgain;
+            Cache = Data;
+            if (Data.empty()) x = y = 8;
+            else {
+                x = Data.back().F;
+                y = Data.back().S;
+            }
         }
-    }
+
+
+        while (abs(evaluation()) < 100) // while the game is not over then keep playing
+        {
+
+            if (Turn == 1) {
+                drawX(XX - 18 + 4 * BOARD_SIZE, YY + 3, 4);
+                drawO(XX - 39, YY + 3, 8);
+            }
+            else {
+                drawO(XX - 39, YY + 3, 1);
+                drawX(XX - 18 + 4 * BOARD_SIZE, YY + 3, 8);
+            } moveTo(x, y);
+
+
+
+            while (true)
+            {
+                int Key = nextMove();
+                if (Turn == 1) { // turn X - A, W, S, D
+                    if (Key == 1 && x > 1) x -= 1;
+                    if (Key == 2 && y > 1) y -= 1;
+                    if (Key == 3 && x < BOARD_SIZE) x += 1;
+                    if (Key == 4 && y < BOARD_SIZE) y += 1;
+                    if (Key == 10 && status[x][y].opt == 0) break;
+                }
+                else { // turn O - 4 arrows
+                    if (Key == 11 && x > 1) x -= 1;
+                    if (Key == 22 && y > 1) y -= 1;
+                    if (Key == 33 && x < BOARD_SIZE) x += 1;
+                    if (Key == 44 && y < BOARD_SIZE) y += 1;
+                    if (Key == 0 && status[x][y].opt == 0) break;
+                }
+
+
+                if (Key == 5) { // exit game
+                    drawStatus(XX - 31, YY + 2 * BOARD_SIZE - 1, 4);
+                    while (true) {
+                        char key = _getch();
+                        if (key == 'N' || key == 'n') break;
+                        else if (key == 'Y' || key == 'y') return;
+                    } drawStatus(XX - 31, YY + 2 * BOARD_SIZE - 1, 1);
+                }
+                if (Key == 6) // Undo
+                {
+                    if (!Cache.empty())
+                    {
+                        x = Cache.back().F;
+                        y = Cache.back().S;
+                        Cache.pop_back();
+                        makeMove(0, x, y);
+                        Turn *= -1;
+                        if (Turn == 1) {
+                            drawX(XX - 18 + 4 * BOARD_SIZE, YY + 3, 4);
+                            drawO(XX - 39, YY + 3, 8);
+                        }
+                        else {
+                            drawO(XX - 39, YY + 3, 1);
+                            drawX(XX - 18 + 4 * BOARD_SIZE, YY + 3, 8);
+                        } moveTo(x, y);
+                    }
+                }
+                if (Key == 7) { // save game
+                    saveGame(XX, YY, Cache, Xscore, Oscore, name1, name2, avatarP1, avatarP2, fileName);
+                }
+                moveTo(x, y);
+            }
+
+            Cache.push_back({ x, y });
+            makeMove(Turn, x, y);
+            Turn *= -1;
+
+            if (Cache.size() == BOARD_SIZE * BOARD_SIZE) {
+                Turn = 0;
+                break;
+            }
+        }
+
+        ShowCur(0);
+        displayWinLine();
+        system("cls");
+        drawGIAO_DAU(XX - 20, YY - 9);
+        drawPopUp(XX - 27, YY + 3, 16, 74);
+        if (Turn == -1)
+        drawX_WIN(XX - 8, YY + 7), Xscore++;    // X Wins
+        else if (Turn == 1)
+        drawO_WIN(XX - 8, YY + 7), Oscore++;    // O Wins
+        else drawDRAW(XX - 7, YY + 7);              // Draw
+
+        gotoXY(XX - 9 - (Turn == -1), YY + 13);
+        for (int i = 0; i < 38; ++i)
+            cout << char(196);
+
+        gotoXY(XX - 9 - (Turn == -1), YY + 14);
+        setColor(15, 8);  cout << "<< Nhan Y de tiep tuc hoac nhan N de thoat >>";
+        setColor(15, 0);
+
+
+        // Hoi nguoi choi co muon choi lai van dau khong
+        while (true) {
+            char key = _getch();
+            if (key == 'N' || key == 'n') break;
+            else if (key == 'Y' || key == 'y') {
+                isNewGame = 1;
+                goto playAgain;
+            }
+        }
 }

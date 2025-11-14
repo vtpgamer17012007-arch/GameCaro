@@ -41,7 +41,7 @@ void drawAvatar1(int XX, int YY);
 void drawAvatar2(int XX, int YY);
 void drawAvatar3(int XX, int YY);
 void drawAvatar(int XX, int YY, int avatarID, int color);
-int selectAvatar(int XX, int YY, string playerName);
+
 void drawBoard(int Xi, int Yi, string name1, string name2, int avatarP1, int avatarP2, int Xscore, int Oscore, string fileName);
 void drawBoardMenu(int XX, int YY, int size, int b_color, string str);
 void drawPopUp(int XX, int YY, int h, int w);

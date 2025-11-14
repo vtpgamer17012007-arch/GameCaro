@@ -771,14 +771,12 @@ void drawAvatar3(int XX, int YY) {
 	gotoXY(XX + 2, YY + 3); cout << " \\-/ ";
 }
 void drawAvatar(int XX, int YY, int avatarID, int color) {
-	// Xoa avatar cu ben trong khung truoc khi ve
 	setColor(15, 15); // Nen mac dinh
 	for (int i = 1; i <= 4; i++) {
 		gotoXY(XX + 1, YY + i);
 		cout << "       ";
 	}
 
-	// Ve avatar moi
 	switch (avatarID) {
 	case 1:
 		drawAvatar1(XX, YY);
@@ -797,80 +795,7 @@ void drawAvatar(int XX, int YY, int avatarID, int color) {
 }
 
 
-int selectAvatar(int XX, int YY, string playerName) {
-	system("cls");
-	drawCHONAVATAR(XX - 38, YY - 11);
 
-	int h = 9, w = 60;
-	drawPopUp(XX - 22, YY + 11, h, w + 5);//vẽ bảng hướng dẫn
-
-	setColor(15, 0);
-	gotoXY(XX - 10, YY + 13); cout << "Nhan phim < > hoac A D :De di chuyen \n";
-	gotoXY(XX - 10, YY + 15); cout << "Nhan phim Enter: De chon avatar \n";
-	gotoXY(XX - 10, YY + 17); cout << "Nhan phim Esc : De quay ve man hinh dat ten\n";
-
-	int soluongavt = 3;
-	int vitridangchon = 0;
-	int startX = XX - 9;
-	int avatarY = YY;
-
-	string text = ">> " + playerName + " <<";
-	int textLen = (int)text.length();
-
-	ShowCur(0);
-
-	for (int i = 0; i < soluongavt; i++) {
-		int avatarX = startX + i * 15;
-		// Nếu chọn: Khung Vàng, Nền Vàng. Không chọn: Khung Đen, Nền trắng
-		int color = (i == vitridangchon) ? 14 : 15;
-		drawAvatarFrame(avatarX - 2, avatarY - 1, color);
-		drawAvatar(avatarX - 2, avatarY - 1, i + 1, color);
-	}
-
-	int firstTextX = (startX + vitridangchon * 15) + 2 - (textLen / 2);
-	gotoXY(firstTextX, avatarY + 7);
-	setColor(14, 0); cout << text;
-
-
-	while (true) {
-		int _in = nextMove();
-		int luachontruocdo = vitridangchon;
-
-		if (_in == 2 || _in == 22) vitridangchon = (vitridangchon + soluongavt - 1) % soluongavt;
-		else if (_in == 4 || _in == 44) vitridangchon = (vitridangchon + 1) % soluongavt;
-		else if (_in == 0) {
-			setColor(15, 0);
-			return vitridangchon + 1;
-		}
-		else if (_in == 5) {
-			setColor(15, 0);
-			return 0;
-		}
-
-		if (luachontruocdo != vitridangchon) {
-			int oldX = startX + luachontruocdo * 15;
-			int newX = startX + vitridangchon * 15;
-
-			// Xử lý cái cũ (Về màu trắng)
-			drawAvatarFrame(oldX - 2, avatarY - 1, 15);
-			drawAvatar(oldX - 2, avatarY - 1, luachontruocdo + 1, 15);
-
-			setColor(15, 0); // Xóa tên cũ
-			int oldTextX = (oldX + 2) - (textLen / 2);
-			gotoXY(oldTextX, avatarY + 7);
-			for (int k = 0; k < textLen; k++) cout << " ";
-
-			// Xử lý cái mới (Lên màu vàng)
-			drawAvatarFrame(newX - 2, avatarY - 1, 14);
-			drawAvatar(newX - 2, avatarY - 1, vitridangchon + 1, 14);
-
-			setColor(14, 0); // Vẽ tên mới
-			int newTextX = (newX + 2) - (textLen / 2);
-			gotoXY(newTextX, avatarY + 7);
-			cout << text;
-		}
-	}
-}
 void drawBoard(int Xi, int Yi, string name1, string name2, int avatarP1, int avatarP2, int Xscore, int Oscore, string fileName) {
 	setColor(co_theme);
 	drawGIAO_DAU(Xi - 25, Yi - 9);
@@ -919,25 +844,25 @@ void drawBoard(int Xi, int Yi, string name1, string name2, int avatarP1, int ava
 	int Panel_Y = YY + 2;             // Dòng bắt đầu vẽ
 
 	// ==> PLAYER 2 (TRÁI)
-	drawAvatarFrame(P2_X+3, Panel_Y-1, 14); // Khung Vàng
-	drawAvatar(P2_X+3, Panel_Y-1, avatarP2, 15);
-	gotoXY(P2_X+13, Panel_Y +2); cout << "Score: " << Oscore;
+	drawAvatarFrame(P2_X + 3, Panel_Y - 1, 14); // Khung Vàng
+	drawAvatar(P2_X + 3, Panel_Y - 1, avatarP2, 15);
+	gotoXY(P2_X + 13, Panel_Y + 2); cout << "Score: " << Oscore;
 
 	setColor(15, 0);
 	int name2Len = name2.length();
-	gotoXY(P2_X + 8 - (name2Len / 2), Panel_Y +5); // Tên căn giữa
+	gotoXY(P2_X + 8 - (name2Len / 2), Panel_Y + 5); // Tên căn giữa
 	cout << name2;
 
 	/*drawO(P2_X +2, Panel_Y +3, 8);*/ // Ký hiệu O
 
 
 	// ==> PLAYER 1 (PHẢI)
-	drawAvatarFrame(P1_X+4 , Panel_Y - 1, 14);
-	drawAvatar(P1_X+4, Panel_Y-1, avatarP1, 15);
-	gotoXY(P1_X - 6, Panel_Y +2); cout << "Score: " << Xscore;
+	drawAvatarFrame(P1_X + 4, Panel_Y - 1, 14);
+	drawAvatar(P1_X + 4, Panel_Y - 1, avatarP1, 15);
+	gotoXY(P1_X - 6, Panel_Y + 2); cout << "Score: " << Xscore;
 	setColor(15, 0);
 	int name1Len = (int)name1.length();
-	gotoXY(P1_X  +8- (name1Len / 2), Panel_Y +5); // Tên căn giữa
+	gotoXY(P1_X + 8 - (name1Len / 2), Panel_Y + 5); // Tên căn giữa
 	cout << name1;
 
 	/*drawX(P1_X + 1, Panel_Y + 6, 8)*/; // Ký hiệu X
@@ -1096,5 +1021,5 @@ int help(int Xi, int Yi, int locate) {
 		if (ch == 13) return 1;		// Nhan "enter" de tiep tuc choi
 		else if (ch == 27) return 0;		// Nhan "ESC" de quay ve nhap ten
 	}
-
+	return 0;
 }
