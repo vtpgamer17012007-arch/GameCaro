@@ -3,6 +3,7 @@
 #include "Newgame.h"
 #include "LoadGame.h"
 #include "library.h"
+
 #include <iostream>
 
 #define F first
@@ -222,8 +223,37 @@ void displayWinLine(int winStreak) // Bold the winning line
         }
     }
 }
+int Random()
+{
+    random_device rd;
+    mt19937 gen(rd());
+    std::uniform_int_distribution<> distrib(1, 15);
+    int d = distrib(gen);
+    return d;
+}
+void botMove(int &x, int &y, vector<pair<int,int>> a)
+{
+    int n = a.size();
+    bool check(0);
+    while (true) {
+        x = Random();
+        y = Random();
+        for (int i = 0; i < n; i++) {
+            if (x == a[i].first || y == a[i].second) {
+                check = 0;
+                break;
+            }
+            check = 1;
+        }
+        if (check) {
+            return;
+        }
+            
+    }
+    
+}
 
-void startGame(bool isNewGame, int XX, int YY, string name1, string name2, vector<ii> Data, string fileName, int Xscore, int Oscore, int winStreak)
+void startGame(bool isNewGame, bool isbot, int XX, int YY, string name1, string name2, vector<ii> Data, string fileName, int Xscore, int Oscore, , int winStreak)
 {
 playAgain:
     system("cls");
@@ -233,7 +263,7 @@ playAgain:
     ShowCur(1);
     drawBoard(XX, YY, name1, name2, Xscore, Oscore, fileName);
 
-    if (isNewGame) // if it is a new game then reset everything
+    if (isNewGame) // if it is a new game then reset e verything
     {
         Turn = 1;
         x = 8, y = 8;
@@ -273,20 +303,31 @@ playAgain:
 
         while (true)
         {
-            int Key = nextMove();
+            int Key;
+            if(Turn != -1 || !isbot)
+                Key = nextMove();
             if (Turn == 1) { // turn X - A, W, S, D
+                
                 if (Key == 1 && x > 1) x -= 1;
                 if (Key == 2 && y > 1) y -= 1;
                 if (Key == 3 && x < BOARD_SIZE) x += 1;
                 if (Key == 4 && y < BOARD_SIZE) y += 1;
                 if (Key == 10 && status[x][y].opt == 0) break;
             }
-            else { // turn O - 4 arrows
-                if (Key == 11 && x > 1) x -= 1;
-                if (Key == 22 && y > 1) y -= 1;
-                if (Key == 33 && x < BOARD_SIZE) x += 1;
-                if (Key == 44 && y < BOARD_SIZE) y += 1;
-                if (Key == 0 && status[x][y].opt == 0) break;
+            else {// turn O - 4 arrows
+                if (isbot) {
+                    botMove(x,y,Cache);
+                    break;
+                }
+                else {
+               
+                    if (Key == 11 && x > 1) x -= 1;
+                    if (Key == 22 && y > 1) y -= 1;
+                    if (Key == 33 && x < BOARD_SIZE) x += 1;
+                    if (Key == 44 && y < BOARD_SIZE) y += 1;
+                    if (Key == 0 && status[x][y].opt == 0) break;
+                }
+                
             }
 
 
@@ -318,7 +359,7 @@ playAgain:
                 }
             }
             if (Key == 7) { // save game
-                saveGame(XX, YY, Cache, Xscore, Oscore, name1, name2, fileName, winStreak);
+                saveGame(XX, YY, Cache, Xscore, Oscore, name1, name2, fileName);
             }
             moveTo(x, y);
         }
