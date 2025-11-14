@@ -99,6 +99,81 @@ bool putname(int XX, int YY, string& str) {   //tao o van ban de nhap ten
 	return true; //Sau khi thoat vong lap ,tra ve 1 (true) bao hieu thanh cong.
 }
 
+int selectAvatar(int XX, int YY, string playerName) {
+	system("cls");
+	drawCHONAVATAR(XX - 38, YY - 11);
+
+	int h = 9, w = 60;
+	drawPopUp(XX - 22, YY + 11, h, w + 5);//vẽ bảng hướng dẫn
+
+	setColor(15, 0);
+	gotoXY(XX - 10, YY + 13); cout << "Nhan phim < > hoac A D :De di chuyen \n";
+	gotoXY(XX - 10, YY + 15); cout << "Nhan phim Enter: De chon avatar \n";
+	gotoXY(XX - 10, YY + 17); cout << "Nhan phim Esc : De quay ve man hinh dat ten\n";
+
+	int soluongavt = 3;
+	int vitridangchon = 0;
+	int startX = XX - 9;
+	int avatarY = YY;
+
+	string text = ">> " + playerName + " <<";
+	int textLen = (int)text.length();
+
+	ShowCur(0);
+
+	for (int i = 0; i < soluongavt; i++) {
+		int avatarX = startX + i * 15;
+		// Nếu chọn: Khung Vàng, Nền Vàng. Không chọn: Khung Đen, Nền trắng
+		int color = (i == vitridangchon) ? 14 : 15;
+		drawAvatarFrame(avatarX - 2, avatarY - 1, color);
+		drawAvatar(avatarX - 2, avatarY - 1, i + 1, color);
+	}
+
+	int firstTextX = (startX + vitridangchon * 15) + 2 - (textLen / 2);
+	gotoXY(firstTextX, avatarY + 7);
+	setColor(14, 0); cout << text;
+
+
+	while (true) {
+		int _in = nextMove();
+		int luachontruocdo = vitridangchon;
+
+		if (_in == 2 || _in == 22) vitridangchon = (vitridangchon + soluongavt - 1) % soluongavt;
+		else if (_in == 4 || _in == 44) vitridangchon = (vitridangchon + 1) % soluongavt;
+		else if (_in == 0) {
+			setColor(15, 0);
+			return vitridangchon + 1;
+		}
+		else if (_in == 5) {
+			setColor(15, 0);
+			return 0;
+		}
+
+		if (luachontruocdo != vitridangchon) {
+			int oldX = startX + luachontruocdo * 15;
+			int newX = startX + vitridangchon * 15;
+
+			// Xử lý cái cũ (Về màu trắng)
+			drawAvatarFrame(oldX - 2, avatarY - 1, 15);
+			drawAvatar(oldX - 2, avatarY - 1, luachontruocdo + 1, 15);
+
+			setColor(15, 0); // Xóa tên cũ
+			int oldTextX = (oldX + 2) - (textLen / 2);
+			gotoXY(oldTextX, avatarY + 7);
+			for (int k = 0; k < textLen; k++) cout << " ";
+
+			// Xử lý cái mới (Lên màu vàng)
+			drawAvatarFrame(newX - 2, avatarY - 1, 14);
+			drawAvatar(newX - 2, avatarY - 1, vitridangchon + 1, 14);
+
+			setColor(14, 0); // Vẽ tên mới
+			int newTextX = (newX + 2) - (textLen / 2);
+			gotoXY(newTextX, avatarY + 7);
+			cout << text;
+		}
+	}
+}
+
 void Name(int XX, int YY, bool isbot)
 {
 	system("cls");
@@ -116,11 +191,16 @@ int winStreak = getWinStreak(XX, YY);
 	if (winStreak == 0) return; // Người dùng nhấn Esc
 	
 	if (help(61, 12, 0) == 1) {
-		//startGame(true, isbot, XX + 3, YY, name1, name2, {}, "", 0, 0); // toa do XX = 61 + 3, YY = 12
+		startGame(true, isbot, XX + 3, YY, name1, name2, {}, "", 0, 0, winStreak); // toa do XX = 61 + 3, YY = 12
 	}
 }
 int getWinStreak(int XX, int YY) {
 	int currentStreak = 5; // Mặc định
+  AvatarSelect:
+	int avatarP1 = selectAvatar(XX, YY + 2, name1);
+
+	// Kiem tra neu avatarP1 tra ve 0 (do nhan ESC)
+	if (avatarP1 == 0) goto newgame; // Quay lai man hinh dat ten
 
 	while (true) {
 		string streakStr = "  < " + to_string(currentStreak) + " > ";
@@ -203,5 +283,15 @@ newgame:
 	
 }
 
+	int avatarP2 = selectAvatar(XX, YY + 2, name2);
+	// Kiem tra neu avatarP2 tra ve 0 (do nhan ESC)
+	if (avatarP2 == 0) goto newgame; // Quay lai man hinh dat ten
 
+	if (help(61, 12, 0) == 1) { // Neu help tra ve 1 (Nhan Enter)
+		startGame(true, XX + 3, YY, name1, name2, avatarP1, avatarP2, {}, "", 0, 0);
+	}
+	else // Neu help tra ve 0 (Nhan ESC)
+		goto AvatarSelect; // Quay lai man hinh chon avatar
 
+	/*----------------------------------------------------*/
+}
