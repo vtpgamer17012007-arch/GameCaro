@@ -253,7 +253,7 @@ void botMove(int &x, int &y, vector<pair<int,int>> a)
     
 }
 
-void startGame(bool isNewGame, bool isbot, int XX, int YY, string name1, string name2, vector<ii> Data, string fileName, int Xscore, int Oscore, , int winStreak)
+void startGame(bool isNewGame, bool isbot, int XX, int YY, string name1, string name2, vector<ii> Data, string fileName, int Xscore, int Oscore, int winStreak)
 {
 playAgain:
     system("cls");

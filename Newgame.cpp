@@ -116,7 +116,7 @@ int winStreak = getWinStreak(XX, YY);
 	if (winStreak == 0) return; // Người dùng nhấn Esc
 	
 	if (help(61, 12, 0) == 1) {
-		startGame(true, isbot, XX + 3, YY, name1, name2, {}, "", 0, 0); // toa do XX = 61 + 3, YY = 12
+		//startGame(true, isbot, XX + 3, YY, name1, name2, {}, "", 0, 0); // toa do XX = 61 + 3, YY = 12
 	}
 }
 int getWinStreak(int XX, int YY) {
@@ -148,7 +148,6 @@ newgame:
 	system("cls"); 
 	/*----------------------------------------------------*/
 	
-
 
 
 	struct _aboutMenu {
