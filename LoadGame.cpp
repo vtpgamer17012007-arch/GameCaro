@@ -103,7 +103,7 @@ void loadGame(int XX, int YY) {
 
 
 						loadFromFile(fileNames[S], Cache, Xscore, Oscore, name1, name2, avatarP1, avatarP2, winStreak);
-						startGame(false, XX, YY, name1, name2, avatarP1, avatarP2, Cache, fileNames[S], Xscore, Oscore , winStreak);
+						startGame(false, 1, XX, YY, name1, name2, avatarP1, avatarP2, Cache, fileNames[S], Xscore, Oscore , winStreak);
 						return;
 					}
 
@@ -222,7 +222,7 @@ void saveGame(int XX, int YY, vector<ii> Cache, int Xscore, int Oscore, string n
 	ofstream File(nameFile + ".txt");
 	File << winStreak << " " << Xscore << " " << Oscore << '\n';
 	File << name1 << " " << name2 << '\n';
-	File << avatarP1 << " " << avatarP2 << "\n";
+	//File << avatarP1 << " " << avatarP2 << "\n";
 	for (const auto& tmp : Cache) {
 		File << tmp.first << " " << tmp.second << "\n";
 	} File.close();

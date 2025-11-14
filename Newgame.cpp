@@ -189,18 +189,21 @@ void Name(int XX, int YY, bool isbot)
 		name2 = "Bot Ngu VCL";
 int winStreak = getWinStreak(XX, YY);
 	if (winStreak == 0) return; // Người dùng nhấn Esc
+	int currentStreak = 5; // Mặc định
+	
+	int avatarP1 = selectAvatar(XX, YY + 2, name1);
+	int avatarP2 = selectAvatar(XX, YY + 2, name2);
+	// Kiem tra neu avatarP2 tra ve 0 (do nhan ESC)
+
+	// Kiem tra neu avatarP1 tra ve 0 (do nhan ESC)
+	// Quay lai man hinh dat ten
 	
 	if (help(61, 12, 0) == 1) {
-		startGame(true, isbot, XX + 3, YY, name1, name2, {}, "", 0, 0, winStreak); // toa do XX = 61 + 3, YY = 12
+		startGame(true, isbot, XX + 3, YY, name1, name2, avatarP1, avatarP2, {}, "", 0, 0, winStreak); // toa do XX = 61 + 3, YY = 12
 	}
 }
 int getWinStreak(int XX, int YY) {
 	int currentStreak = 5; // Mặc định
-  AvatarSelect:
-	int avatarP1 = selectAvatar(XX, YY + 2, name1);
-
-	// Kiem tra neu avatarP1 tra ve 0 (do nhan ESC)
-	if (avatarP1 == 0) goto newgame; // Quay lai man hinh dat ten
 
 	while (true) {
 		string streakStr = "  < " + to_string(currentStreak) + " > ";
@@ -283,15 +286,3 @@ newgame:
 	
 }
 
-	int avatarP2 = selectAvatar(XX, YY + 2, name2);
-	// Kiem tra neu avatarP2 tra ve 0 (do nhan ESC)
-	if (avatarP2 == 0) goto newgame; // Quay lai man hinh dat ten
-
-	if (help(61, 12, 0) == 1) { // Neu help tra ve 1 (Nhan Enter)
-		startGame(true, XX + 3, YY, name1, name2, avatarP1, avatarP2, {}, "", 0, 0);
-	}
-	else // Neu help tra ve 0 (Nhan ESC)
-		goto AvatarSelect; // Quay lai man hinh chon avatar
-
-	/*----------------------------------------------------*/
-}
