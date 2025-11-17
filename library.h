@@ -19,7 +19,9 @@
 #include <ctime>
 #include <conio.h>
 #include <Windows.h>
-
+#include <chrono>
+#include <thread>
+#include <conio.h>
 #if __cplusplus >= 201103L
 #include <ccomplex>
 #include <cfenv>

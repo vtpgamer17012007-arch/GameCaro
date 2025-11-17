@@ -279,7 +279,7 @@ void botMove(int &x, int &y, vector<pair<int,int>> a)
     }
     
 }
-
+std::chrono::high_resolution_clock::time_point start_time;
 void startGame(bool isNewGame, bool isbot, int XX, int YY, string name1, string name2, int avatarP1, int avatarP2, vector<ii> Data, string fileName, int Xscore, int Oscore, int winStreak)
 {
 playAgain:
@@ -318,7 +318,7 @@ playAgain:
         }
     }
 
-
+    start_time = std::chrono::high_resolution_clock::now();
     while (abs(evaluation(winStreak)) < 100) // while the game is not over then keep playing
     {
 
@@ -332,77 +332,97 @@ playAgain:
         } moveTo(x, y);
 
 
-
-        while (true)
+        int Key=-1;
+        bool moveMade = false;
+        while (!moveMade)
         {
-            int Key;
-            if(Turn != -1 || !isbot)
-                Key = nextMove();
-            if (Turn == 1) { // turn X - A, W, S, D
-                
-                if (Key == 1 && x > 1) x -= 1;
-                if (Key == 2 && y > 1) y -= 1;
-                if (Key == 3 && x < BOARD_SIZE) x += 1;
-                if (Key == 4 && y < BOARD_SIZE) y += 1;
-                if (Key == 10 && status[x][y].opt == 0) break;
+            if (Turn == -1 && isbot) {
+                botMove(x, y, Cache);
+                Key = 10; // Giả lập phím đánh cờ
+                break;
             }
-            else {// turn O - 4 arrows
-                if (isbot) {
-                    botMove(x,y,Cache);
+            if (Turn != -1 || !isbot) {
+                if (countdown(XX, YY) == 0) {
+                    Key = -99; // HẾT GIỜ
                     break;
                 }
-                else {
-               
-                    if (Key == 11 && x > 1) x -= 1;
-                    if (Key == 22 && y > 1) y -= 1;
-                    if (Key == 33 && x < BOARD_SIZE) x += 1;
-                    if (Key == 44 && y < BOARD_SIZE) y += 1;
-                    if (Key == 0 && status[x][y].opt == 0) break;
+            }
+            if (_kbhit()) {
+                Key = nextMove();
+                if (Turn == 1) { // turn X - A, W, S, D
+
+                    if (Key == 1 && x > 1) x -= 1;
+                    if (Key == 2 && y > 1) y -= 1;
+                    if (Key == 3 && x < BOARD_SIZE) x += 1;
+                    if (Key == 4 && y < BOARD_SIZE) y += 1;
+                    if (Key == 10 && status[x][y].opt == 0) break;
                 }
-                
-            }
-
-
-            if (Key == 5) { // exit game
-                drawStatus(XX - 31, YY + 2 * BOARD_SIZE - 1, 4);
-                while (true) {
-                    char key = _getch();
-                    if (key == 'N' || key == 'n') break;
-                    else if (key == 'Y' || key == 'y') return;
-                } drawStatus(XX - 31, YY + 2 * BOARD_SIZE - 1, 1);
-            }
-            if (Key == 6) // Undo
-            {
-                if (!Cache.empty())
-                {
-                    x = Cache.back().F;
-                    y = Cache.back().S;
-                    Cache.pop_back();
-                    makeMove(0, x, y);
-                    Turn *= -1;
-                    if (Turn == 1) {
-                        drawX(XX - 24 + 4 * BOARD_SIZE, YY + 3, 4); //sua o day
-                        drawO(XX - 25 + 4 * BOARD_SIZE, YY + 18, 8); //o day
+                else {// turn O - 4 arrows
+                    if (isbot) {
+                        botMove(x, y, Cache);
+                        break;
                     }
                     else {
-                        drawO(XX - 25 + 4 * BOARD_SIZE, YY + 18, 1); //o day
-                        drawX(XX - 24 + 4 * BOARD_SIZE, YY + 3, 8);  // o day
+
+                        if (Key == 11 && x > 1) x -= 1;
+                        if (Key == 22 && y > 1) y -= 1;
+                        if (Key == 33 && x < BOARD_SIZE) x += 1;
+                        if (Key == 44 && y < BOARD_SIZE) y += 1;
+                        if (Key == 0 && status[x][y].opt == 0) break;
                     }
-                    //Highlight lai nuoc di cuoi cung moi
-                    if (!Cache.empty()) {
-                        ii newLastMove = Cache.back();
-                        int lastTurn = status[newLastMove.F][newLastMove.S].opt;
-                        makeMove(lastTurn, newLastMove.F, newLastMove.S, true);
-                    }
-                    moveTo(x, y);
+
                 }
+
+
+                if (Key == 5) { // exit game
+                    drawStatus(XX - 31, YY + 2 * BOARD_SIZE - 1, 4);
+                    while (true) {
+                        char key = _getch();
+                        if (key == 'N' || key == 'n') break;
+                        else if (key == 'Y' || key == 'y') return;
+                    } drawStatus(XX - 31, YY + 2 * BOARD_SIZE - 1, 1);
+                }
+                if (Key == 6) // Undo
+                {
+                    if (!Cache.empty())
+                    {
+                        x = Cache.back().F;
+                        y = Cache.back().S;
+                        Cache.pop_back();
+                        makeMove(0, x, y);
+                        Turn *= -1;
+                        if (Turn == 1) {
+                            drawX(XX - 24 + 4 * BOARD_SIZE, YY + 3, 4); //sua o day
+                            drawO(XX - 25 + 4 * BOARD_SIZE, YY + 18, 8); //o day
+                        }
+                        else {
+                            drawO(XX - 25 + 4 * BOARD_SIZE, YY + 18, 1); //o day
+                            drawX(XX - 24 + 4 * BOARD_SIZE, YY + 3, 8);  // o day
+                        }
+                        //Highlight lai nuoc di cuoi cung moi
+                        if (!Cache.empty()) {
+                            ii newLastMove = Cache.back();
+                            int lastTurn = status[newLastMove.F][newLastMove.S].opt;
+                            makeMove(lastTurn, newLastMove.F, newLastMove.S, true);
+                        }
+                        moveTo(x, y);
+                    }
+                }
+                moveTo(x, y);
             }
             //if (Key == 7) { // save game
                 //saveGame(XX, YY, Cache, Xscore, Oscore, name1, name2, avatarP1, avatarP2, fileName);
             //}
-            moveTo(x, y);
+            
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
         }
-
+        if (Key == -99) {
+            // Hết giờ, chuyển lượt
+            Turn *= -1;
+            // CẦN RESET TIMER CHO LƯỢT MỚI
+            start_time = std::chrono::high_resolution_clock::now();
+            continue;
+        }
 
         // Bo highlight nuoc di truoc do
         if (!Cache.empty()) {
@@ -413,7 +433,7 @@ playAgain:
         Cache.push_back({ x, y });
         makeMove(Turn, x, y,true);
         Turn *= -1;
-
+        start_time = std::chrono::high_resolution_clock::now();
         if (Cache.size() == BOARD_SIZE * BOARD_SIZE) {
             Turn = 0;
             break;
@@ -449,4 +469,45 @@ playAgain:
             goto playAgain;
         }
     }
+}
+
+int countdown(int XX, int YY)
+{
+    const int TIME_LIMIT = 15; // Giới hạn thời gian 15 giây
+
+    // Tính toán thời gian đã trôi qua
+    auto current_time = std::chrono::high_resolution_clock::now();
+    auto elapsed_seconds = std::chrono::duration_cast<std::chrono::seconds>(current_time - start_time).count();
+    int TimeRemain = TIME_LIMIT - elapsed_seconds;
+
+    // Tọa độ để hiển thị đồng hồ đếm ngược
+    const int BOARD_SIZE = 15; // Giả định
+    int TimerX = XX + BOARD_SIZE * 2 - 5;
+    int TimerY = YY - 3;
+
+    // Vị trí hiển thị chữ "TIME:"
+    gotoXY(TimerX - 10, TimerY);
+    setColor(15, 0);
+    std::cout << "TIME: ";
+
+    if (TimeRemain <= 0)
+    {
+        // Hết giờ
+        gotoXY(TimerX - 10, TimerY);
+        setColor(15, 0);
+        std::cout << "         ";
+        return 0;
+    }
+
+    // Hiển thị thời gian
+    gotoXY(TimerX, TimerY);
+    if (TimeRemain <= 5)
+        setColor(15, 4); // Màu đỏ khi còn ít thời gian
+    else
+        setColor(15, 2); // Màu xanh lá cây
+
+    // In thời gian (2 chữ số, vd: 05, 10, 15)
+    std::cout << (TimeRemain < 10 ? "0" : "") << TimeRemain << "s ";
+
+    return 1; // Vẫn còn thời gian
 }
