@@ -173,35 +173,6 @@ int selectAvatar(int XX, int YY, string playerName) {
 		}
 	}
 }
-
-void Name(int XX, int YY, bool isbot)
-{
-	system("cls");
-	drawGAME_MOI(XX - 20, YY - 9);
-	string name1, name2;
-	drawBoardMenu(XX - 5, YY, 31, 15, " Ten nguoi choi 1: ");
-	if (!putname(XX + 14, YY + 1, name1 = "[nhap_ten]")) return;   // Name of player 1
-	if (isbot == 0) {
-		drawBoardMenu(XX - 5, YY + 3, 31, 15, " Ten nguoi choi 2: ");
-		if (!putname(XX + 14, YY + 4, name2 = "[nhap_ten]")) return;   // Name of player 2
-	}
-	else
-		name2 = "Bot Ngu VCL";
-int winStreak = getWinStreak(XX, YY);
-	if (winStreak == 0) return; // Người dùng nhấn Esc
-	int currentStreak = 5; // Mặc định
-	
-	int avatarP1 = selectAvatar(XX, YY + 2, name1);
-	int avatarP2 = selectAvatar(XX, YY + 2, name2);
-	// Kiem tra neu avatarP2 tra ve 0 (do nhan ESC)
-
-	// Kiem tra neu avatarP1 tra ve 0 (do nhan ESC)
-	// Quay lai man hinh dat ten
-	
-	if (help(61, 12, 0) == 1) {
-		startGame(true, isbot, XX + 3, YY, name1, name2, avatarP1, avatarP2, {}, "", 0, 0, winStreak); // toa do XX = 61 + 3, YY = 12
-	}
-}
 int getWinStreak(int XX, int YY) {
 	int currentStreak = 5; // Mặc định
 
@@ -225,16 +196,46 @@ int getWinStreak(int XX, int YY) {
 }
 
 
+void SelectInfor(int XX, int YY, bool isbot)
+{
+	Name:
+	system("cls");
+	drawGAME_MOI(XX - 20, YY - 9);
+	string name1, name2;
+	drawBoardMenu(XX - 5, YY, 31, 15, " Ten nguoi choi 1: ");
+	if (!putname(XX + 14, YY + 1, name1 = "[nhap_ten]")) return;   // Name of player 1
+	if (isbot == 0) {
+		drawBoardMenu(XX - 5, YY + 3, 31, 15, " Ten nguoi choi 2: ");
+		if (!putname(XX + 14, YY + 4, name2 = "[nhap_ten]")) return;   // Name of player 2
+	}
+	else
+		name2 = "BotNguVCL";
+	int winStreak = getWinStreak(XX, YY);
+	if (winStreak == 0) return; // Người dùng nhấn Esc
+	int currentStreak = 5; // Mặc định
+	
+	int avatarP1 = selectAvatar(XX, YY + 2, name1);
+	if ((avatarP1) == 0) goto Name; // Kiem tra neu avatarP1 tra ve 0 (do nhan ESC)
+	int avatarP2 = selectAvatar(XX, YY + 2, name2);
+	if ((avatarP2) == 0) goto Name; // Kiem tra neu avatarP2 tra ve 0 (do nhan ESC)
+	
+	
+
+	
+	
+	if (help(61, 12, 0) == 1) {
+		startGame(true, isbot, XX + 3, YY, name1, name2, avatarP1, avatarP2, {}, "", 0, 0, winStreak); // toa do XX = 61 + 3, YY = 12
+	}
+}
+
+
 void newGame(int XX, int YY) {
-newgame:
+	newgame:
 	/*------------------ DECOR ---------------------------*/
 	system("cls"); 
 	/*----------------------------------------------------*/
-	
-
-
+	drawMODE(XX - 7, YY - 9);
 	struct _aboutMenu {
-
 		int X, Y, size, b_color;
 		string str;
 
@@ -244,12 +245,12 @@ newgame:
 	};
 
 	_aboutMenu s1[2], s2[2];  // s1: khong chon  ;  s2: chon
-	s1[0] = { XX, YY, 20, 15,     "     PLAYER VS BOT     " };
-	s1[1] = { XX, YY + 3, 20, 15, "     PLAYER VS PLAYER    " };
+	s1[0] = { XX, YY, 25, 15,     "     PLAYER VS BOT     " };
+	s1[1] = { XX, YY + 3, 25, 15, "    PLAYER VS PLAYER   " };
 	
 
-	s2[0] = { XX, YY, 20, 14,     ">>   PLAYER VS BOT   <<" };
-	s2[1] = { XX, YY + 3, 20, 14, ">>   PLAYER VS PLAYER  <<" };
+	s2[0] = { XX, YY, 25, 14,     ">>   PLAYER VS BOT   <<" };
+	s2[1] = { XX, YY + 3, 25, 14, ">>  PLAYER VS PLAYER <<" };
 	
 
 	pullList();
@@ -257,7 +258,7 @@ newgame:
 
 	while (true) {
 		/*------------------ DECOR ---------------------------*/
-		drawMODE(XX - 20, YY - 9);
+		drawMODE(XX - 7, YY - 9);
 		for (int i = 0; i < 2; ++i)
 			s1[i].draw();
 		s2[S].draw();
@@ -270,9 +271,10 @@ newgame:
 		/*----------------- Menu selection -------------------*/
 		if (_in == 1 || _in == 11) S = (S + 1) % 2;        // Up
 		else if (_in == 3 || _in == 33) S = (S + 1) % 2;   // Down
+		else if (_in == 5) return;   // ESC
 		else if (_in == 0) {				  // Enter
-			if (S == 0) Name(XX, YY, 1);
-			else if (S == 1) Name(XX, YY, 0);
+			if (S == 0) SelectInfor(XX, YY, 1);
+			else if (S == 1) SelectInfor(XX, YY, 0);
 			else assert(false);
 			system("cls");
 		}

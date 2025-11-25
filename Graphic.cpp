@@ -692,9 +692,9 @@ void drawGIAO_DAU(int XX, int YY) {
 }
 void drawMODE(int XX, int YY) {
 	drawM(XX + 1, YY);
-	drawO(XX + 8, YY);
-	drawD(XX + 16, YY);
-	drawE(XX + 24, YY);
+	drawO(XX + 12, YY);
+	drawD(XX + 21, YY);
+	drawE(XX + 29, YY);
 
 }
 
