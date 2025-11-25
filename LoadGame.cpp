@@ -198,7 +198,7 @@ void saveGame(int XX, int YY, vector<ii> Cache, int Xscore, int Oscore, bool isB
 		if (tmp == nameFile) checkSame = 1;
 	}
 		
-	cout << checkSame;
+	
 	if (checkSame) {
 		drawStatus(XX - 31, YY + 2 * BOARD_SIZE - 1, 3);
 		while (true) {

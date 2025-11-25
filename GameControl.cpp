@@ -342,16 +342,16 @@ playAgain:
                 Key = 10; // Giả lập phím đánh cờ
                 break;
             }
-            //if (Turn == 1 || !isbot) { //Dong ho chay khi luot nguoi cua mode 1 ng; Dong ho chay ca 2 nguoi o mode 2 nguoi
-            //    if (countdown(XX, YY) == 0) {
-            //        
-            //        Key = -99; // HẾT GIỜ
-            //        
-            //        break;
-            //    }
-            //    
-            //    
-            //}
+            if (Turn == 1 || !isbot) { //Dong ho chay khi luot nguoi cua mode 1 ng; Dong ho chay ca 2 nguoi o mode 2 nguoi
+                if (countdown(XX, YY) == 0) {
+                    
+                    Key = -99; // HẾT GIỜ
+                    
+                    break;
+                }
+                
+                
+            }
             moveTo(x, y);
              ShowCur(1);
             if (_kbhit()) {
