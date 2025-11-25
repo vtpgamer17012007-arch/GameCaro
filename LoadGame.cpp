@@ -98,12 +98,14 @@ void loadGame(int XX, int YY) {
 					if (Sj == 0) {		// Load file and play
 						vector<ii> Cache;
 						int Xscore, Oscore, winStreak;
+						bool isBot;
 						string name1, name2;
 						int avatarP1, avatarP2;
 
 
-						loadFromFile(fileNames[S], Cache, Xscore, Oscore, name1, name2, avatarP1, avatarP2, winStreak);
-						startGame(false, 1, XX, YY, name1, name2, avatarP1, avatarP2, Cache, fileNames[S], Xscore, Oscore , winStreak);
+						loadFromFile(fileNames[S], Cache, Xscore, Oscore, isBot, name1, name2, avatarP1, avatarP2, winStreak);
+						startGame(false, isBot, XX, YY, name1, name2, avatarP1, avatarP2, Cache, fileNames[S], Xscore, Oscore , winStreak);
+						
 						return;
 					}
 
@@ -181,7 +183,7 @@ void loadGame(int XX, int YY) {
 	}
 }
 
-void saveGame(int XX, int YY, vector<ii> Cache, int Xscore, int Oscore, string name1, string name2, string& nameFile, int winStreak) {
+void saveGame(int XX, int YY, vector<ii> Cache, int Xscore, int Oscore, bool isBot, string name1, string name2, int avatarP1, int avatarP2, int winStreak, string& nameFile) {
 	if (nameFile == "") {
 	insertName:
 		drawStatus(XX - 31, YY + 2 * BOARD_SIZE - 1, 2);
@@ -190,11 +192,13 @@ void saveGame(int XX, int YY, vector<ii> Cache, int Xscore, int Oscore, string n
 			return;
 		} if (nameFile == "") goto insertName;
 	}
-
+	
 	bool checkSame = 0;
-	for (string tmp : fileNames)
+	for (string tmp : fileNames) {
 		if (tmp == nameFile) checkSame = 1;
-
+	}
+		
+	cout << checkSame;
 	if (checkSame) {
 		drawStatus(XX - 31, YY + 2 * BOARD_SIZE - 1, 3);
 		while (true) {
@@ -212,47 +216,30 @@ void saveGame(int XX, int YY, vector<ii> Cache, int Xscore, int Oscore, string n
 			fileNames.erase(fileNames.begin());
 		fileNames.push_back(nameFile);
 	}
+	pushList();
 
 	drawStatus(XX - 31, YY + 2 * BOARD_SIZE - 1, 1);
 
 	drawName_Board(XX + 4 * BOARD_SIZE - 30, YY + 2 * BOARD_SIZE - 1, nameFile);
-	pushList();
+	
 
 	// Save game to PC
 	ofstream File(nameFile + ".txt");
-	File << winStreak << " " << Xscore << " " << Oscore << '\n';
-	File << name1 << " " << name2 << '\n';
+	File << isBot << " " << winStreak << " " << Xscore << " " << Oscore << '\n';
+	File << name1 << " " << name2 << " " << avatarP1 << " " << avatarP2 << '\n';
 	//File << avatarP1 << " " << avatarP2 << "\n";
 	for (const auto& tmp : Cache) {
 		File << tmp.first << " " << tmp.second << "\n";
 	} File.close();
 }
-void loadFromFile(string nameFile, vector<ii>& Cache, int& Xscore, int& Oscore, string& name1, string& name2, int& avatarP1, int& avatarP2,  int& winStreak){	// Load data from file is saved
+void loadFromFile(string nameFile, vector<ii>& Cache, int& Xscore, int& Oscore, bool& isBot, string& name1, string& name2, int& avatarP1, int& avatarP2, int& winStreak) {	// Load data from file is saved
 	Cache.clear();
 	nameFile += ".txt";
 	ifstream file(nameFile);
 	int x, y;
-	string firstLine;
-	getline(file, firstLine); // Đọc dòng đầu tiên (chứa điểm số)
-	stringstream ss(firstLine);
-	int val1, val2, val3;
-
-	if (ss >> val1 >> val2 >> val3) { // Định dạng mới: winStreak Xscore Oscore
-		winStreak = val1;
-		Xscore = val2;
-		Oscore = val3;
-	}
-	else { // Định dạng cũ: Xscore Oscore
-		stringstream ss_old(firstLine);
-		ss_old >> val1 >> val2;
-		winStreak = 5; // Mặc định 5 cho các file save cũ
-		Xscore = val1;
-		Oscore = val2;
-	}
-
-	file >> name1 >> name2; // Đọc tên người chơi từ dòng tiếp theo
-
-	file >> Xscore >> Oscore >> name1 >> name2>>avatarP1>>avatarP2;
+	
+	file >> isBot >> winStreak >> Xscore >> Oscore  >> name1 >> name2 >> avatarP1 >> avatarP2;
+	
 	while (file >> x >> y) Cache.emplace_back(x, y);
 	file.close();
 }

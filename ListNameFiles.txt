@@ -1,6 +1,4 @@
-testthang
-othang
-conbo
-phongvsphu
-testXthang
-testOthang
+conca
+2players
+bot
+bot2

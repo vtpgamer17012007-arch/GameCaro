@@ -1,6 +1,5 @@
 ﻿#include "Console.h"
 
-
 void fixConsoleWindow(int WIDTH, int HEIGHT) {
 	system("COLOR f0");
 	HWND consoleWindow = GetConsoleWindow();

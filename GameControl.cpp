@@ -4,8 +4,6 @@
 #include "LoadGame.h"
 #include "library.h"
 
-#include <iostream>
-
 #define F first
 #define S second
 
@@ -16,7 +14,7 @@ typedef pair<int, int> ii;
 int Turn;
 _Point status[BOARD_SIZE + 5][BOARD_SIZE + 5];
 vector<ii> Cache, winLine; // cache la vector luu vi tri X, O de luu game ||  winLine la vector luu toa doa khi cua cua X hoac O khi thang dung de bieu dien hieu ung winline
-
+std::chrono::high_resolution_clock::time_point start_time;
 
 
 int get_score(int a[], int winStreak)
@@ -265,8 +263,11 @@ void botMove(int &x, int &y, vector<pair<int,int>> a)
     while (true) {
         x = Random();
         y = Random();
+        if (n == 0) {
+            check = 1;
+        }
         for (int i = 0; i < n; i++) {
-            if (x == a[i].first || y == a[i].second) {
+            if (x == a[i].first && y == a[i].second) {
                 check = 0;
                 break;
             }
@@ -279,7 +280,7 @@ void botMove(int &x, int &y, vector<pair<int,int>> a)
     }
     
 }
-std::chrono::high_resolution_clock::time_point start_time;
+
 void startGame(bool isNewGame, bool isbot, int XX, int YY, string name1, string name2, int avatarP1, int avatarP2, vector<ii> Data, string fileName, int Xscore, int Oscore, int winStreak)
 {
 playAgain:
@@ -336,18 +337,25 @@ playAgain:
         bool moveMade = false;
         while (!moveMade)
         {
-            if (Turn == -1 && isbot) {
+            if (Turn == -1 && isbot) { //luot cua O
                 botMove(x, y, Cache);
                 Key = 10; // Giả lập phím đánh cờ
                 break;
             }
-            if (Turn != -1 || !isbot) {
-                if (countdown(XX, YY) == 0) {
-                    Key = -99; // HẾT GIỜ
-                    break;
-                }
-            }
+            //if (Turn == 1 || !isbot) { //Dong ho chay khi luot nguoi cua mode 1 ng; Dong ho chay ca 2 nguoi o mode 2 nguoi
+            //    if (countdown(XX, YY) == 0) {
+            //        
+            //        Key = -99; // HẾT GIỜ
+            //        
+            //        break;
+            //    }
+            //    
+            //    
+            //}
+            moveTo(x, y);
+             ShowCur(1);
             if (_kbhit()) {
+                
                 Key = nextMove();
                 if (Turn == 1) { // turn X - A, W, S, D
 
@@ -409,12 +417,13 @@ playAgain:
                     }
                 }
                 moveTo(x, y);
+                if (Key == 7) { // save game
+                    saveGame(XX, YY, Cache, Xscore, Oscore, isbot, name1, name2, avatarP1, avatarP2, winStreak, fileName);
+                }
             }
-            //if (Key == 7) { // save game
-                //saveGame(XX, YY, Cache, Xscore, Oscore, name1, name2, avatarP1, avatarP2, fileName);
-            //}
             
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
         if (Key == -99) {
             // Hết giờ, chuyển lượt
@@ -473,6 +482,7 @@ playAgain:
 
 int countdown(int XX, int YY)
 {
+    ShowCur(0);
     const int TIME_LIMIT = 15; // Giới hạn thời gian 15 giây
 
     // Tính toán thời gian đã trôi qua
@@ -508,6 +518,7 @@ int countdown(int XX, int YY)
 
     // In thời gian (2 chữ số, vd: 05, 10, 15)
     std::cout << (TimeRemain < 10 ? "0" : "") << TimeRemain << "s ";
-
+   
+    
     return 1; // Vẫn còn thời gian
 }
