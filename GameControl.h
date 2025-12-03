@@ -17,4 +17,10 @@ bool valid(int x, int y); // tọa độ có hợp lệ hay không
 int evaluation(int winStreak);
 void startGame(bool isNewGame, bool isbot, int XX, int YY, string name1, string name2, int avatarP1, int avatarP2,  vector<pair<int, int>> Data, string fileName, int Xscore, int Oscore, int winStreak);
 int countdown(int XX, int YY);
+void displayWinLine(int winStreak);
+void makeMove(int Turn, int x, int y, bool isHighlighted);
+int Random();
+void botMove(int& x, int& y, vector<pair<int, int>> a);
+
+
 #endif
