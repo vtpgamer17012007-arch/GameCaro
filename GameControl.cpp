@@ -248,6 +248,7 @@ void displayWinLine(int winStreak) // Bold the winning line
         }
     }
 }
+
 int Random()
 {
     random_device rd;

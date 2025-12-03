@@ -1,5 +1,0 @@
-conca
-2players
-bot
-bot2
-jkl
